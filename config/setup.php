@@ -8,7 +8,7 @@
         $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 //        -- -----------------------------------------------------
-//        -- Schema mydb
+//        -- Schema camagru
 //        -- -----------------------------------------------------
         $req = "DROP SCHEMA IF EXISTS $schema";
         $pdo->exec($req);
@@ -16,10 +16,17 @@
         $pdo->exec($req);
 
 //        -- -----------------------------------------------------
-//        -- Table `camagru`.`users`
+//        -- Table camagru.users
 //        -- -----------------------------------------------------
         require '../model/UserModel.php';
         \model\UserModel::createTable($pdo, $schema);
+
+//        -- -----------------------------------------------------
+//        -- Table camagru.images
+//        -- -----------------------------------------------------
+        require '../model/ImageModel.php';
+        \model\ImageModel::createTable($pdo, $schema);
+
 
     } catch (PDOException $e) {
         echo 'Connection failed: '.$e->getMessage();

@@ -5,12 +5,12 @@ class UserModel
 {
     private $db;
 
-    public function findById($id)
-    {
-        $req = 'SELECT * FORM users WHERE id='.(int)$id;
-        $r = $this->db->query($req);
-        return $r->fetchColumn();
-    }
+//    public function findById($id)
+//    {
+//        $req = 'SELECT * FORM users WHERE id='.(int)$id;
+//        $r = $this->db->query($req);
+//        return $r->fetchColumn();
+//    }
 
     static function createTable(\PDO $db, $schema = "camagru")
     {
