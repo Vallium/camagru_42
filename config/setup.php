@@ -27,6 +27,11 @@
         require '../model/ImageModel.php';
         \model\ImageModel::createTable($pdo, $schema);
 
+//        -- -----------------------------------------------------
+//        -- Table camagru.images
+//        -- -----------------------------------------------------
+        require '../model/LikeModel.php';
+        \model\LikeModel::createTable($pdo, $schema);
 
     } catch (PDOException $e) {
         echo 'Connection failed: '.$e->getMessage();
