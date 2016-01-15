@@ -31,4 +31,5 @@ class CommentModel
                     ON DELETE NO ACTION
                     ON UPDATE NO ACTION)";
         return $db->exec($req);
+    }
 }

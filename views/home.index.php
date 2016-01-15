@@ -1,5 +1,5 @@
 <h1>Home</h1>
 <ul>
-    <li>Username : <?= $username; ?></li>
-    <li>Age : <?= $age; ?></li>
+    <li>Username : <?= $home['username']; ?></li>
+    <li>Age : <?= $home['age']; ?></li>
 </ul>

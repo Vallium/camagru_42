@@ -28,16 +28,16 @@
         \model\ImageModel::createTable($pdo, $schema);
 
 //        -- -----------------------------------------------------
-//        -- Table camagru.images
+//        -- Table camagru.likes
 //        -- -----------------------------------------------------
         require '../model/LikeModel.php';
         \model\LikeModel::createTable($pdo, $schema);
 
 //        -- -----------------------------------------------------
-//        -- Table camagru.images
+//        -- Table camagru.comments
 //        -- -----------------------------------------------------
-//        require '../model/CommentModel.php';
-//        \model\CommentModel::createTable($pdo, $schema);
+        require '../model/CommentModel.php';
+        \model\CommentModel::createTable($pdo, $schema);
 
     } catch (PDOException $e) {
         echo 'Connection failed: '.$e->getMessage();
