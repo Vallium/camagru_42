@@ -1,4 +1,6 @@
 <?php
+namespace model;
+
 abstract class Model
 {
     protected $db;

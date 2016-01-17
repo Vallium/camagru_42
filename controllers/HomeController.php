@@ -8,6 +8,9 @@ class HomeController extends Controller
     public function index()
     {
 //        echo 'plop';
+        $this->loadModel('UserModel');
+        echo $this->UserModel->table;
+
         $v = array();
         $v['home'] = array(
             'username' => 'Vallium',

@@ -27,4 +27,14 @@ abstract class Controller
             require ROOT.'views'.DS.'layout'.DS.$this->layout.'.php';
     }
 
+    public function loadModel($name)
+    {
+        require_once(ROOT.'models'.DS.$name.'.php');
+
+//        $this->$name = '\model\\'.$name;
+
+        $this->$name = new $name();
+//        echo ROOT.'models'.DS.$name.'.php';
+    }
+
 }
