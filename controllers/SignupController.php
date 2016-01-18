@@ -6,6 +6,6 @@ class SignupController extends Controller
 {
     public function index()
     {
-        echo 'signup';
+        $this->render('signup.php');
     }
 }

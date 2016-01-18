@@ -32,4 +32,6 @@ class UserModel
                       UNIQUE INDEX email_UNIQUE (email ASC))";
         return $db->exec($req);
     }
+
+    static function add(\PDO $db)
 }
