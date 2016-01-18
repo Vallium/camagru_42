@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d2a0463c-041a-4bf9-a348-d0a71d59ff89" name="Server42" url="http://anton.alliot.me/">
+        <fileTransfer host="anton.alliot.me" port="22" accessType="SFTP" password="dfd9dfdedfdfdfc4dfdedf9bdf9bdf99" username="vallium">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
