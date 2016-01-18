@@ -5,8 +5,7 @@
     $schema = 'camagru';
 
     try {
-        // $pdo = new PDO($DB_DSN_SETUP, $DB_USER, $DB_PASSWORD);
-        $pdo = new PDO('mysql:host=localhost;port=3306', 'root', 'root');
+        $pdo = new PDO($DB_DSN_SETUP, $DB_USER, $DB_PASSWORD);
 
         $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
