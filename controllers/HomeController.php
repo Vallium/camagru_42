@@ -8,8 +8,8 @@ class HomeController extends Controller
     public function index()
     {
 //        echo 'plop';
-        $this->loadModel('UserModel');
-        echo $this->UserModel->table;
+//         $this->loadModel('UserModel');
+        // echo $this->UserModel->table;
 
         $v = array();
         $v['home'] = array(
@@ -18,6 +18,6 @@ class HomeController extends Controller
         );
 
         $this->set($v);
-        $this->render('home.index.php');
+        $this->render('home.php');
     }
 }

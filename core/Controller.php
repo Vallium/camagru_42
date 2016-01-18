@@ -31,10 +31,8 @@ abstract class Controller
     {
         require_once(ROOT.'models'.DS.$name.'.php');
 
-//        $this->$name = '\model\\'.$name;
-
+        $this->$name = '\model\\'.$name;
         $this->$name = new $name();
-//        echo ROOT.'models'.DS.$name.'.php';
     }
 
 }

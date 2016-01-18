@@ -3,8 +3,11 @@
 
 
     $schema = 'camagru';
+
     try {
-        $pdo = new PDO($DB_DSN_SETUP, $DB_USER, $DB_PASSWORD);
+        // $pdo = new PDO($DB_DSN_SETUP, $DB_USER, $DB_PASSWORD);
+        $pdo = new PDO('mysql:host=localhost;port=3306', 'root', 'root');
+
         $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 //        -- -----------------------------------------------------
@@ -18,25 +21,25 @@
 //        -- -----------------------------------------------------
 //        -- Table camagru.users
 //        -- -----------------------------------------------------
-        require '../model/UserModel.php';
+        require '../models/UserModel.php';
         \model\UserModel::createTable($pdo, $schema);
 
 //        -- -----------------------------------------------------
 //        -- Table camagru.images
 //        -- -----------------------------------------------------
-        require '../model/ImageModel.php';
+        require '../models/ImageModel.php';
         \model\ImageModel::createTable($pdo, $schema);
 
 //        -- -----------------------------------------------------
 //        -- Table camagru.likes
 //        -- -----------------------------------------------------
-        require '../model/LikeModel.php';
+        require '../models/LikeModel.php';
         \model\LikeModel::createTable($pdo, $schema);
 
 //        -- -----------------------------------------------------
 //        -- Table camagru.comments
 //        -- -----------------------------------------------------
-        require '../model/CommentModel.php';
+        require '../models/CommentModel.php';
         \model\CommentModel::createTable($pdo, $schema);
 
     } catch (PDOException $e) {
