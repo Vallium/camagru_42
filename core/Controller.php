@@ -13,7 +13,7 @@ abstract class Controller
         $this->vars = array_merge($this->vars, $var);
     }
 
-    public function render($view)
+    protected function render($view)
     {
         extract($this->vars);
 
@@ -27,12 +27,12 @@ abstract class Controller
             require ROOT.'views'.DS.'layout'.DS.$this->layout.'.php';
     }
 
-    public function loadModel($model)
+    protected function loadModel($model)
     {
         require_once(ROOT.'models'.DS.$model.'.php');
-        $model = '\model\\'.$model;
+        $modelname = '\model\\'.$model;
 
-        $this->$model = new $model();
+        $this->$model= new $modelname();
     }
 
 }

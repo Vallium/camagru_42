@@ -1,4 +1,6 @@
 <?php
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'on');
     include('database.php');
 
 
@@ -7,7 +9,7 @@
     try {
         $pdo = new PDO($DB_DSN_SETUP, $DB_USER, $DB_PASSWORD);
 
-        $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 //        -- -----------------------------------------------------
 //        -- Schema camagru
@@ -17,6 +19,7 @@
         $req = "CREATE SCHEMA IF NOT EXISTS $schema DEFAULT CHARACTER SET utf8";
         $pdo->exec($req);
 
+        require '../core/Model.php';
 //        -- -----------------------------------------------------
 //        -- Table camagru.users
 //        -- -----------------------------------------------------

@@ -4,24 +4,15 @@ namespace model;
 abstract class Model
 {
     protected $db;
-//    protected $table;
-
-    function    __construct()
-    {
-        $this->dbConnexion();
-    }
-
-    function    __destruct()
-    {
-        $this->dbKill();
-    }
+    protected $table;
 
     //Connexion BDD et Deconnexion
     protected function  dbConnexion()
     {
-        require(ROOT.'config/database.php');
+        require(ROOT.'config'.DS.'database.php');
         try {
             $this->db = new \PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
+            $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
         catch (PDOException $e){
             print 'Erreur !:'.$e->getMessage().'<br />';
@@ -33,43 +24,17 @@ abstract class Model
         $this->db = NULL;
     }
 
-    /**
-     * Sauvegarde ou Update dans la table
-     * @param $data = Array Assoc
-     */
-//    protected function  save($data)
-//    {
-//        if (empty($this->table))
-//            return ("Erreur");
-//        $this->dbConnexion();
-//        if (isset($data['id']) && !empty($data['id']))
-//        {
-//            $request = "UPDATE $this->table SET ";
-//            $id = $data['id'];
-//            unset($data['id']);
-//            foreach ($data as $k => $v)
-//                $request .= "$k=$v ";
-//            $request .= " WHERE id=$id";
-//        }
-//        else
-//        {
-//            unset($data['id']);
-//            $request ="INSERT INTO $this->table VALUES (";
-//            $numData = count($data);
-//            $i = 0;
-//            foreach ($data as $k => $v) {
-//                $request .= "$v";
-//                if (++$i < $numData)
-//                    $request .= ", ";
-//            }
-//            $request .= ")";
-//        }
-//
-//        $request = $this->db->prepare($request);
-//        $request->execute();
-//        $this->dbKill();
-//    }
-//
+    public function save($obj)
+    {
+        if ($obj->getId())
+            $this->update($obj);
+        else
+            $this->create($obj);
+    }
+
+    public function getDb() { return $this->db; }
+//    abstract public function update();
+    abstract protected function create(\item\User $obj);
 //    /**
 //     * @param $param = Array avec toute possibilite de requete SQL (Select, Where, Group, having, order, limit, offset)
 //     * @return PDO::FET_ASSOC;

@@ -11,12 +11,12 @@ define('DS', DIRECTORY_SEPARATOR);
 require('core/Controller.php');
 require('core/Model.php');
 
-//function __autoload($class)
-//{
-//    $path = ROOT.DS.str_replace('\\', DS, $class).'.php';
-//    if (file_exists($path))
-//        require $path;
-//}
+function __autoload($class)
+{
+    $path = ROOT.DS.str_replace('\\', DS, $class).'.php';
+    if (file_exists($path))
+        require $path;
+}
 
 $url = explode('/', $_GET['url']);
 
