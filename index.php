@@ -27,16 +27,10 @@ $method = isset($url[1]) ? $url[1] : 'index';
 unset($url[0]);
 unset($url[1]);
 
-//echo 'controller'.DS.$controller.'.php';
-
 require('controllers'.DS.$controller.'.php');
-
 $controller = '\controller\\'.$controller;
-
-//echo $controller;
-
 $controller = new $controller();
-//
+
 if (method_exists($controller, $method))
 {
     $controller->$method();

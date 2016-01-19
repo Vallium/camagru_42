@@ -27,12 +27,13 @@ abstract class Controller
             require ROOT.'views'.DS.'layout'.DS.$this->layout.'.php';
     }
 
-    public function loadModel($name)
+    public function loadModel($model)
     {
-        require_once(ROOT.'models'.DS.$name.'.php');
-
-        $this->$name = '\model\\'.$name;
-        $this->$name = new $name();
+        echo ROOT.'models'.DS.$model.'.php'.PHP_EOL;
+        require_once(ROOT.'models'.DS.$model.'.php');
+        $this->$model = '\model\\'.$model;
+        echo '\model\\'.$model;
+        $this->$model = new $model();
     }
 
 }

@@ -3,8 +3,8 @@ namespace model;
 
 abstract class Model
 {
-    protected $db;
-    protected $table;
+//    protected $db;
+//    protected $table;
 
 //    function    __construct(\PDO $db)
 //    {
@@ -12,16 +12,17 @@ abstract class Model
 //    }
 
     //Connexion BDD et Deconnexion
-    protected function  dbConnexion()
-    {
-        require('../config/database.php');
-        try {
-            $this->db = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
-        }
-        catch (PDOException $e){
-            print 'Erreur !:'.$e->getMessage().'<br />';
-        }
-    }
+//    protected function  dbConnexion()
+//    {
+//        require('../config/database.php');
+//        try {
+//            $this->db = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
+//            echo 'co ok';
+//        }
+//        catch (PDOException $e){
+//            print 'Erreur !:'.$e->getMessage().'<br />';
+//        }
+//    }
 //
 //    protected function dbKill()
 //    {

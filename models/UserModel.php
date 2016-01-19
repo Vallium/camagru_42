@@ -1,11 +1,11 @@
 <?php
 namespace model;
 
-class UserModel
+class UserModel extends Model
 {
 //    private $db;
 
-    private $table = 'users';
+//    public $table = 'users';
 
 //    public function findById($id)
 //    {
@@ -14,24 +14,24 @@ class UserModel
 //        return $r->fetchColumn();
 //    }
 
-    static function createTable(\PDO $db, $schema = "camagru")
-    {
-        //Drop
-        $req = "DROP TABLE IF EXISTS $schema.users";
-        $db->exec($req);
+//    static function createTable(\PDO $db, $schema = "camagru")
+//    {
+//        //Drop
+//        $req = "DROP TABLE IF EXISTS $schema.users";
+//        $db->exec($req);
+//
+//        //Create
+//        $req = "CREATE TABLE IF NOT EXISTS $schema.users(
+//                      id INT NOT NULL AUTO_INCREMENT,
+//                      username VARCHAR(45) NULL,
+//                      password VARCHAR(255) NULL,
+//                      email VARCHAR(255) NULL,
+//                      is_admin TINYINT(1) NULL DEFAULT 0,
+//                      PRIMARY KEY (id),
+//                      UNIQUE INDEX username_UNIQUE (username ASC),
+//                      UNIQUE INDEX email_UNIQUE (email ASC))";
+//        return $db->exec($req);
+//    }
 
-        //Create
-        $req = "CREATE TABLE IF NOT EXISTS $schema.users(
-                      id INT NOT NULL AUTO_INCREMENT,
-                      username VARCHAR(45) NULL,
-                      password VARCHAR(255) NULL,
-                      email VARCHAR(255) NULL,
-                      is_admin TINYINT(1) NULL DEFAULT 0,
-                      PRIMARY KEY (id),
-                      UNIQUE INDEX username_UNIQUE (username ASC),
-                      UNIQUE INDEX email_UNIQUE (email ASC))";
-        return $db->exec($req);
-    }
-
-    static function add(\PDO $db)
+//    static function add(\PDO $db)
 }
