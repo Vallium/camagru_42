@@ -29,10 +29,9 @@ abstract class Controller
 
     public function loadModel($model)
     {
-        echo ROOT.'models'.DS.$model.'.php'.PHP_EOL;
         require_once(ROOT.'models'.DS.$model.'.php');
-        $this->$model = '\model\\'.$model;
-        echo '\model\\'.$model;
+        $model = '\model\\'.$model;
+
         $this->$model = new $model();
     }
 

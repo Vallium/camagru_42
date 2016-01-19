@@ -3,36 +3,40 @@ namespace model;
 
 abstract class Model
 {
-//    protected $db;
+    protected $db;
 //    protected $table;
 
-//    function    __construct(\PDO $db)
-//    {
-//        $this->db = $db;
-//    }
+    function    __construct()
+    {
+        $this->dbConnexion();
+    }
+
+    function    __destruct()
+    {
+        $this->dbKill();
+    }
 
     //Connexion BDD et Deconnexion
-//    protected function  dbConnexion()
-//    {
-//        require('../config/database.php');
-//        try {
-//            $this->db = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
-//            echo 'co ok';
-//        }
-//        catch (PDOException $e){
-//            print 'Erreur !:'.$e->getMessage().'<br />';
-//        }
-//    }
-//
-//    protected function dbKill()
-//    {
-//        $this->db = NULL;
-//    }
-//
-//    /**
-//     * Sauvegarde ou Update dans la table
-//     * @param $data = Array Assoc
-//     */
+    protected function  dbConnexion()
+    {
+        require(ROOT.'config/database.php');
+        try {
+            $this->db = new \PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
+        }
+        catch (PDOException $e){
+            print 'Erreur !:'.$e->getMessage().'<br />';
+        }
+    }
+
+    protected function dbKill()
+    {
+        $this->db = NULL;
+    }
+
+    /**
+     * Sauvegarde ou Update dans la table
+     * @param $data = Array Assoc
+     */
 //    protected function  save($data)
 //    {
 //        if (empty($this->table))
