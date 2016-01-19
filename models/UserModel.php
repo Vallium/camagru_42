@@ -50,6 +50,7 @@ class UserModel extends Model
         } catch (PDOException $e){
             print 'Erreur !:'.$e->getMessage().'<br />';
         }
+        
     }
 
 
