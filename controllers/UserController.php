@@ -7,6 +7,7 @@ use item\User;
  * Class UserController
  * @package controller
  */
+
 class UserController extends Controller
 {
     public function index()

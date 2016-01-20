@@ -33,8 +33,12 @@ abstract class Model
     }
 
     public function getDb() { return $this->db; }
+
 //    abstract public function update();
     abstract protected function create(\item\User $obj);
+
+
+
 //    /**
 //     * @param $param = Array avec toute possibilite de requete SQL (Select, Where, Group, having, order, limit, offset)
 //     * @return PDO::FET_ASSOC;
