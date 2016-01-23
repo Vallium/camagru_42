@@ -4,6 +4,7 @@ h1 {
 
 img {
     width: 200px;
+    border-radius: 3px;
     height: auto;
 }
 
@@ -18,8 +19,6 @@ span:hover {
 
 .images-holder {
     margin-top: 20px;
-    /*text-align: center;*/
-    /*width: 700px;*/
 }
 
 .col-1, .col-2, .col-3 {
@@ -42,7 +41,9 @@ img.grayscale {
     filter: gray; /* IE6-9 */
     -webkit-filter: grayscale(100%); /* Chrome 19+ & Safari 6+ */
     -webkit-transition: all .6s ease; /* Fade to color for Chrome and Safari */
+    /*-moz-transition: all ease 4s 3s; !* Fade to color for Mozilla *!*/
     -webkit-backface-visibility: hidden;
+    /*-moz-backface-visibility: hidden;*/
 }
 
 img.grayscale:hover {

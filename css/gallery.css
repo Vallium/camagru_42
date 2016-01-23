@@ -1,0 +1,10 @@
+
+div#wrap {
+    width: 960px;
+    margin: 0px auto;
+}
+img.newData {
+    height: 1000px;
+    background: orange;
+    margin: 10px 0px;
+}
