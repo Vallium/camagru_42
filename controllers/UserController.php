@@ -17,7 +17,14 @@ class UserController extends Controller
 
     public function signup()
     {
-        if (isset($_POST)) {
+        if (isset($_SESSION['username']))
+        {
+            $this->render('home.php');
+            return;
+        }
+
+        if (isset($_POST))
+        {
             $this->loadModel('UserModel');
 
             $errors = array();
@@ -42,9 +49,61 @@ class UserController extends Controller
                     $errors['exist'] = true;
             }
 //            else
-                print_r($errors);
+//                print_r($errors);
         }
         $this->render('signup.php');
     }
 
+    public function signin()
+    {
+        if (isset($_SESSION['username']))
+        {
+            $this->render('home.php');
+            return;
+        }
+
+        if (isset($_POST))
+        {
+            $this->loadModel('UserModel');
+
+            $errors = array();
+
+            if (empty($_POST['username']) || !is_string($_POST['username']) || strlen($_POST['username'] > 45))
+                $errors['username'] = true;
+            if (empty($_POST['password']) || strlen($_POST['password']) > 255 )
+                $errors['password'] = true;
+
+            if (empty($errors))
+            {
+                $user = $this->UserModel->find($_POST['username']);
+                if ($user) {
+                    if (sha1($_POST['password']) == $user['password'])
+                    {
+                        $_SESSION['id'] = $user['id'];
+                        $_SESSION['username'] = $_POST['username'];
+                    }
+                    else
+                        echo 'bad pass';
+                }
+                else
+                    echo 'no exist';
+            }
+        }
+        $this->render('signin.php');
+    }
+
+    public function logout() {
+        session_unset();
+        session_destroy();
+        $this->render('home.php');
+    }
+
+    public function profile($user_id) {
+        $this->loadModel('UserModel');
+
+        $user['profile'] = array('user' => $this->UserModel->findById($user_id));
+        $this->set($user);
+
+        $this->render('profile.php');
+    }
 }

@@ -34,5 +34,4 @@ abstract class Controller
 
         $this->$model= new $modelname();
     }
-
 }
