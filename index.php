@@ -11,12 +11,13 @@ define('DS', DIRECTORY_SEPARATOR);
 require('core/Controller.php');
 require('core/Model.php');
 
-//function __autoload($class)
-//{
-//    $path = ROOT.DS.str_replace('\\', DS, $class).'.php';
-//    if (file_exists($path))
-//        require $path;
-//}
+function __autoload($class)
+{
+    $path = ROOT.DS.str_replace('\\', DS, $class).'.php';
+    echo $path;
+    if (file_exists($path))
+        require $path;
+}
 
 $url = explode('/', $_GET['url']);
 
@@ -32,9 +33,6 @@ $controller = '\controller\\'.$controller;
 $controller = new $controller();
 
 if (method_exists($controller, $method))
-{
-    $controller->$method();
-//    call_user_func_array(array($controller, $method), $url);
-}
+    call_user_func_array(array($controller, $method), $url);
 else
     echo 'erreur 404';

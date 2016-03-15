@@ -1,3 +1,3 @@
-/**
- * Created by Vallium on 15/03/2016.
- */
+window.onload = function () {
+    document.getElementById("divToScroll").scrollIntoView({behavior: "smooth"});
+};

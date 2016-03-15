@@ -8,13 +8,18 @@ class HomeController extends Controller
     public function index()
     {
         $this->loadModel('UserModel');
-        $v = array();
+        $this->loadModel('ImageModel');
+
         $v['home'] = array(
-            'username' => 'Vallium',
-            'age' => '23',
+            'images' => $this->ImageModel->getLast(12),
         );
 
         $this->set($v);
         $this->render('home.php');
+    }
+
+    public function getLastImages()
+    {
+        $this->loadModel('ImageModel');
     }
 }

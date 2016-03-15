@@ -1,8 +1,10 @@
 <?php
 namespace model;
 
-class CommentModel
+class CommentModel extends Model
 {
+    protected $table = 'comments';
+
     static function createTable(\PDO $db, $schema = "camagru")
     {
         //Drop
@@ -13,8 +15,8 @@ class CommentModel
         $req = "CREATE TABLE IF NOT EXISTS $schema.comments (
                     id INT NOT NULL AUTO_INCREMENT,
                     content TEXT NULL,
-                    -- created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-                    -- updated_at DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                    created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
                     images_id INT NOT NULL,
                     users_id INT NOT NULL,
                     PRIMARY KEY (id),
@@ -32,4 +34,14 @@ class CommentModel
                     ON UPDATE NO ACTION)";
         return $db->exec($req);
     }
+
+    public function getCommentsByImageId($id)
+    {
+        $req = array(
+            'where' => 'images_id='.$id
+        );
+
+        return $this->get($req);
+    }
+
 }

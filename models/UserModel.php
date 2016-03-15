@@ -3,35 +3,77 @@ namespace model;
 
 class UserModel extends Model
 {
-//    private $db;
+    protected $table = 'users';
 
-//    public $table = 'users';
+    static function createTable(\PDO $db, $schema = "camagru")
+    {
+        //Drop
+        $req = "DROP TABLE IF EXISTS $schema.users";
+        $db->exec($req);
 
-//    public function findById($id)
-//    {
-//        $req = 'SELECT * FORM users WHERE id='.(int)$id;
-//        $r = $this->db->query($req);
-//        return $r->fetchColumn();
-//    }
+        //Create
+        $req = "CREATE TABLE IF NOT EXISTS $schema.users(
+                      id INT NOT NULL AUTO_INCREMENT,
+                      username VARCHAR(45) NULL,
+                      password VARCHAR(255) NULL,
+                      email VARCHAR(255) NULL,
+                      is_admin TINYINT(1) NULL DEFAULT 0,
+                      created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+                      PRIMARY KEY (id),
+                      UNIQUE INDEX username_UNIQUE (username ASC),
+                      UNIQUE INDEX email_UNIQUE (email ASC))";
+        return $db->exec($req);
+    }
 
-//    static function createTable(\PDO $db, $schema = "camagru")
-//    {
-//        //Drop
-//        $req = "DROP TABLE IF EXISTS $schema.users";
-//        $db->exec($req);
-//
-//        //Create
-//        $req = "CREATE TABLE IF NOT EXISTS $schema.users(
-//                      id INT NOT NULL AUTO_INCREMENT,
-//                      username VARCHAR(45) NULL,
-//                      password VARCHAR(255) NULL,
-//                      email VARCHAR(255) NULL,
-//                      is_admin TINYINT(1) NULL DEFAULT 0,
-//                      PRIMARY KEY (id),
-//                      UNIQUE INDEX username_UNIQUE (username ASC),
-//                      UNIQUE INDEX email_UNIQUE (email ASC))";
-//        return $db->exec($req);
-//    }
+    /**
+     * @param $obj \item\User
+     */
+    protected function create(\item\User $obj)
+    {
+        $req = "INSERT INTO $this->table (username, password, email) VALUE (:username, :password, :email)";
 
-//    static function add(\PDO $db)
+        $this->dbConnexion();
+        try {
+            $r = $this->db->prepare($req);
+            $r->bindValue(':username', $obj->getUsername(), \PDO::PARAM_STR);
+            $r->bindValue(':password', $obj->getPassword(), \PDO::PARAM_STR);
+            $r->bindValue(':email', $obj->getEmail(), \PDO::PARAM_STR);
+            $r->execute();
+        } catch (\PDOException $e){
+            print 'Erreur !:'.$e->getMessage().'<br />';
+        }
+        
+    }
+
+    public function find($username) {
+        $req = "SELECT * FROM $this->table WHERE username='$username'";
+
+        $this->dbConnexion();
+        try {
+            $user = $this->db->query($req)->fetch();
+        } catch (\PDOException $e) {
+            print 'Erreur !:'.$e->getMessage().'<br />';
+        }
+        if (isset($user))
+            return ($user);
+        return ('no user with this username');
+    }
+
+    public function getByUsername($username)
+    {
+        $req = array(
+            'where' => "username=$username",
+        );
+
+        return $this->get($req);
+    }
+
+    public function getById($user_id)
+    {
+        $req = array(
+            'where' => "id=$user_id",
+        );
+
+        return $this->get($req);
+    }
 }

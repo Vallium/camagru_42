@@ -1,8 +1,10 @@
 <?php
 namespace model;
 
-class LikeModel
+class LikeModel extends Model
 {
+    protected $table = 'likes';
+
     static function createTable(\PDO $db, $schema = "camagru")
     {
         //Drop
@@ -28,5 +30,15 @@ class LikeModel
                     ON DELETE NO ACTION
                     ON UPDATE NO ACTION)";
         return $db->exec($req);
+    }
+
+    public function countLikesByImageId($id)
+    {
+        $req = array(
+            'select' => 'COUNT(*)',
+            'where' => 'images_id='.$id
+        );
+
+        return $this->get($req);
     }
 }
