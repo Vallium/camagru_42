@@ -14,6 +14,7 @@
         <div class="right-col">
             <?php $imgDate = new DateTime($pic['picture'][0]->created_at);?>
             <h4>Posted on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?></h4>
+            <h1>This pic was liked <?=$pic['likes'][0]->count;?> times</h1>
 
             <h1>Commentaires</h1>
             <?php foreach($pic['comments'] as $comment):?>
