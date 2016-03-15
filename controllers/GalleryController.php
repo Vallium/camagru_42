@@ -2,6 +2,8 @@
 
 namespace controller;
 
+use item\Comment;
+
 class GalleryController extends Controller
 {
     public function index() {
@@ -44,11 +46,35 @@ class GalleryController extends Controller
 
         $v['pic'] = array(
             'picture' => $this->ImageModel->getImageById($id),
-            'comments' => $this->CommentModel->getCommentsByImageId($id),
+            'comments' => $this->CommentModel->getLastComments($id, 10),
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
 
         $this->set($v);
         $this->render('pic.php');
+    }
+
+    public function postComment()
+    {
+        if (isset($_POST))
+        {
+                print_r($_POST);
+            $this->loadModel('CommentModel');
+
+            $errors = array();
+
+            if (empty($_POST['content']) || !is_string($_POST['content']))
+                $errors['content'] = true;
+
+            if (empty($errors))
+            {
+                $comment = new Comment();
+
+                $comment->setContent($_POST['content']);
+                $comment->setImagesId($_POST['images_id']);
+                $comment->setUsersId($_POST['users_id']);
+                $this->CommentModel->save($comment);
+            }
+        }
     }
 }

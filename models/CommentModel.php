@@ -35,6 +35,26 @@ class CommentModel extends Model
         return $db->exec($req);
     }
 
+    /**
+     * @param $obj \item\Comment
+     */
+    protected function create(\item\Comment $com)
+    {
+        $req = "INSERT INTO $this->table (content, images_id, users_id) VALUE (:content, :images_id, :users_id)";
+
+        $this->dbConnexion();
+        try {
+            $r = $this->db->prepare($req);
+            $r->bindValue(':content', $com->getContent(), \PDO::PARAM_STR);
+            $r->bindValue(':images_id', $com->getImagesId(), \PDO::PARAM_INT);
+            $r->bindValue(':users_id', $com->getUsersId(), \PDO::PARAM_INT);
+            $r->execute();
+        } catch (\PDOException $e){
+            print 'Erreur !:'.$e->getMessage().'<br />';
+        }
+
+    }
+
     public function getCommentsByImageId($id)
     {
         $req = array(
@@ -44,4 +64,14 @@ class CommentModel extends Model
         return $this->get($req);
     }
 
+    public function getLastComments($imgId, $nb)
+    {
+        $req = array(
+            'where' => 'images_id='.$imgId,
+            'order' => 'created_at DESC',
+            'limit' => $nb
+        );
+
+        return $this->get($req);
+    }
 }
