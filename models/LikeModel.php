@@ -35,7 +35,7 @@ class LikeModel extends Model
     public function countLikesByImageId($id)
     {
         $req = array(
-            'select' => 'COUNT(*)',
+            'select' => 'count(*) as count',
             'where' => 'images_id='.$id
         );
 
