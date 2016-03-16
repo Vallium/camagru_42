@@ -21,8 +21,8 @@
                 <p><?=$comment->content;?></p>
             <?php endforeach;?>
             <?php if (isset($_SESSION['loggedin'])):?>
-                <form method="post" onsubmit="return ajax(this);">
-                    <input type="text" name="content">
+                <form method="post" onsubmit="return ajaxPostCom(this);">
+                    <input id="inCom" type="text" name="content">
                     <input type="hidden" name="users_id" value="<?=$_SESSION['id'];?>">
                     <input type="hidden" name="images_id" value="<?=$pic['picture'][0]->id;?>">
                     <button type="submit">Post</button>

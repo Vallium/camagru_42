@@ -46,7 +46,7 @@ class GalleryController extends Controller
 
         $v['pic'] = array(
             'picture' => $this->ImageModel->getImageById($id),
-            'comments' => $this->CommentModel->getLastComments($id, 10),
+            'comments' => $this->CommentModel->getLastComments($id, 20),
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
 

@@ -68,7 +68,7 @@ class CommentModel extends Model
     {
         $req = array(
             'where' => 'images_id='.$imgId,
-            'order' => 'created_at DESC',
+            'order' => 'created_at ASC',
             'limit' => $nb
         );
 
