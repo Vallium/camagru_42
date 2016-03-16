@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="d2a0463c-041a-4bf9-a348-d0a71d59ff89" name="Server42" url="http://anton.alliot.me/camagru">
-        <fileTransfer host="anton.alliot.me" port="22" accessType="SFTP" password="dfd9dfdedfdfdfc4dfdedf9bdf9bdf99" username="vallium">
+      <webServer id="f9d44ba1-0489-49b5-8aeb-64a3140bc386" name="server42" url="http://camagru.alliot.me">
+        <fileTransfer host="anton.alliot.me" port="22" rootFolder="/var/www/camagru" accessType="SFTP" password="dfd9dfdedfdfdfc4dfdedf9bdf9bdf99" username="vallium">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
