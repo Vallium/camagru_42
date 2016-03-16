@@ -6,16 +6,19 @@
 </head>
 
 <body>
-    <?php print_r($pic);?>
+    <?php //print_r($pic);?>
     <div id="divToScroll">
         <div class="left-col">
             <img src="/img/uploads/<?= $pic['picture'][0]->id?>.jpg" alt="">
         </div>
         <div class="right-col">
-            <?php $imgDate = new DateTime($pic['picture'][0]->created_at);?>
-            <h4>Posted on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?></h4>
+            <a href="/home" class="svg">
+                <object data="/img/utils/blackLike.svg" type="image/svg+xml" class="like-icon"></object>
+            </a>
             <h1>This pic was liked <?=$pic['likes'][0]->count;?> times</h1>
 
+            <?php $imgDate = new DateTime($pic['picture'][0]->created_at);?>
+            <h4>Posted on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?></h4>
             <h1>Commentaires</h1>
             <?php foreach($pic['comments'] as $comment):?>
                 <p><?=$comment->content;?></p>
