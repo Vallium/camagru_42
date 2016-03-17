@@ -22,24 +22,67 @@ function ajaxPostCom(oFormElem)
 {
     var xhr = getXMLHttpRequest();
     xhr.open("POST", "/gallery/postComment", true);
-    //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+
+            if (json = true)
+            {
+                document.getElementById('comments').innerHTML += '<p>' + document.getElementById('inCom').value + '</p>';
+            }
+            else if (json == "noUserConnected")
+                alert('You must be connected to post a comment');
             document.getElementById('inCom').value = "";
-            //var json  = JSON.parse(xhr.responseText);
-            //for (var i = 0; i < json.length; i++) {
-            //    //wrap.innerHTML += '<div class="col-' + (i + 1) + '"><img src="/img/uploads/' + json[i].id + '.jpg" class="grayscale"></img></div>';
-            //    wrap.innerHTML += '<a href="/gallery/pic/' +json[i].id + '"><img src="/img/uploads/' + json[i].id + '.jpg" class="grayscale"></img></a>';
-            //}
-            //imgNb += 3;
         }
-    }
+    };
 
     xhr.send(new FormData(oFormElem));
-    return false;
 }
+
+
+function ajaxLike()
+{
+    var xhr = getXMLHttpRequest();
+    xhr.open("POST", "/gallery/like/" + document.getElementById('img-id').value, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var json  = JSON.parse(xhr.responseText);
+            var likeButton = document.getElementById("likeChar");
+
+            if (json == true)
+            {
+                document.getElementById('likeNbr').innerHTML = parseInt(document.getElementById('likeNbr').innerHTML) + 1;
+                likeButton.className += " active";
+            }
+            else if (json == false)
+            {
+                document.getElementById('likeNbr').innerHTML = parseInt(document.getElementById('likeNbr').innerHTML) - 1;
+                likeButton.className = "like";
+            }
+            else if (json == "noUserConnected")
+                alert('You must be connected to like a photo');
+        }
+    };
+    xhr.send();
+}
+
 
 window.onload = function () {
     document.getElementById("divToScroll").scrollIntoView({behavior: "smooth"});
+
+    document.getElementById("formComment").addEventListener("submit", function(){
+        event.preventDefault();
+
+        ajaxPostCom(this);
+    });
+
+    document.getElementById("likeButton").addEventListener("click", function(){
+        event.preventDefault();
+
+        ajaxLike();
+
+    });
 };

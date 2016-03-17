@@ -70,15 +70,16 @@ abstract class Model
         return ($return->fetchAll());
     }
 
-//    protected function  delete($id)
-//    {
-//        if (empty($this->table))
-//            return ("Erreur");
-//        $this->dbConnexion();
+    protected function delete($id)
+    {
+        if (empty($this->table))
+            return ("Erreur");
+        $this->dbConnexion();
 //        if (is_int($id))
 //        {
-//            $this->db->exec("DELETE FROM $this->table WHERE id=$id");
+            $req = $this->db->prepare("DELETE FROM $this->table WHERE id=$id");
+            $req->execute();
 //        }
-//        $this->dbKill();
-//    }
+        $this->dbKill();
+    }
 }

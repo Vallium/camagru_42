@@ -4,6 +4,29 @@ img {
     margin-left: 20px;
 }
 
+a {
+    color:black;
+}
+
+h6 {
+    border-bottom: 1px solid #000;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+}
+
+.like {
+    font-size: 18px;
+}
+
+.like:hover, .like.active:hover {
+    color: rgba(255, 104, 0, 0.5);
+    cursor: pointer;
+}
+
+.like.active {
+    color: rgb(255, 104, 0);
+}
+
 .left-col {
     width: 48%;
     margin-right: 20px;

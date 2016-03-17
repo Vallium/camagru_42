@@ -12,25 +12,29 @@
             <img src="/img/uploads/<?= $pic['picture'][0]->id?>.jpg" alt="">
         </div>
         <div class="right-col">
-            <a href="/home" class="svg">
-                <object data="/img/utils/blackLike.svg" type="image/svg+xml" class="like-icon"></object>
+            <a id="likeButton" href="/gallery/like/<?= $pic['picture'][0]->id?>">
+                <input type="hidden" id="img-id" value="<?= $pic['picture'][0]->id?>">
+                <?php if (isset($pic['is_liked'][0]->isLiked) && $pic['is_liked'][0]->isLiked):?>
+                    <span id="likeChar" class="like active"</span>
+                <?php else:?>
+                    <span id="likeChar" class="like"</span>
+                <?php endif;?>
             </a>
-            <h1>This pic was liked <?=$pic['likes'][0]->count;?> times</h1>
-
+            <p id="likeNbr"><?=$pic['likes'][0]->count;?></p>
             <?php $imgDate = new DateTime($pic['picture'][0]->created_at);?>
-            <h4>Posted on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?></h4>
+            <h6>Posted on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?></h6>
             <h1>Commentaires</h1>
-            <?php foreach($pic['comments'] as $comment):?>
-                <p><?=$comment->content;?></p>
-            <?php endforeach;?>
-            <?php if (isset($_SESSION['loggedin'])):?>
-                <form method="post" onsubmit="return ajaxPostCom(this);">
+            <div id="comments">
+                <?php foreach($pic['comments'] as $comment):?>
+                    <p><?=$comment->content;?></p>
+                <?php endforeach;?>
+            </div>
+                <form id="formComment" method="post" action="/gallery/postComment" <?php if (!isset($_SESSION['loggedin'])):?>style="display: none;"<?php endif;?>>
                     <input id="inCom" type="text" name="content">
                     <input type="hidden" name="users_id" value="<?=$_SESSION['id'];?>">
                     <input type="hidden" name="images_id" value="<?=$pic['picture'][0]->id;?>">
                     <button type="submit">Post</button>
                 </form>
-            <?php endif;?>
         </div>
     </div>
 </body>

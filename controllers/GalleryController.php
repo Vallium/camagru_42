@@ -3,6 +3,7 @@
 namespace controller;
 
 use item\Comment;
+use item\Like;
 
 class GalleryController extends Controller
 {
@@ -50,31 +51,77 @@ class GalleryController extends Controller
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
 
+        if (isset($_SESSION['loggedin']))
+            $v['pic']['is_liked'] = $this->LikeModel->isLiked($id, $_SESSION['id']);
+
         $this->set($v);
         $this->render('pic.php');
     }
 
     public function postComment()
     {
-        if (isset($_POST))
+        if (isset($_SESSION['loggedin']))
         {
-                print_r($_POST);
-            $this->loadModel('CommentModel');
+            if (isset($_POST)) {
+                $this->loadModel('CommentModel');
 
-            $errors = array();
+                $errors = array();
 
-            if (empty($_POST['content']) || !is_string($_POST['content']))
-                $errors['content'] = true;
+                if (empty($_POST['content']) || !is_string($_POST['content']))
+                    $errors['content'] = true;
 
-            if (empty($errors))
+                if (empty($errors)) {
+                    $comment = new Comment();
+
+                    $comment->setContent($_POST['content']);
+                    $comment->setImagesId($_POST['images_id']);
+                    $comment->setUsersId($_POST['users_id']);
+                    $this->CommentModel->save($comment);
+
+                    $json = true;
+                }
+            } else
+                $json = false;
+        }
+        else
+            $json = "noUserConnected";
+
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        {
+            echo json_encode($json);
+            die();
+        }
+        $this->pic($_POST['images_id']);
+    }
+
+    public function like($image_id)
+    {
+        if (isset($_SESSION['loggedin']))
+        {
+            $this->loadModel('LikeModel');
+            if ($this->LikeModel->isLiked($image_id, $_SESSION['id'])[0]->isLiked)
             {
-                $comment = new Comment();
+                $this->LikeModel->deleteLike($this->LikeModel->findLikeId($image_id, $_SESSION['id'])[0]->id);
+                $json = false;
+            }
+            else
+            {
+                $like = new Like();
 
-                $comment->setContent($_POST['content']);
-                $comment->setImagesId($_POST['images_id']);
-                $comment->setUsersId($_POST['users_id']);
-                $this->CommentModel->save($comment);
+                $like->setImagesId($image_id);
+                $like->setUsersId($_SESSION['id']);
+                $this->LikeModel->save($like);
+                $json = true;
             }
         }
+        else
+            $json = "noUserConnected";
+
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        {
+            echo json_encode($json);
+            die();
+        }
+        $this->pic($image_id);
     }
 }
