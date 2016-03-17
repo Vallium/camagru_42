@@ -5,25 +5,42 @@ namespace controller;
 use item\Comment;
 use item\Like;
 
+$nb_img_on_gallery_load = 6;
+
 class GalleryController extends Controller
 {
     public function index() {
         $this->loadModel('ImageModel');
 
         $v['gallery'] = array(
-            'images' => $this->ImageModel->getLast(12)
+            'images' => $this->ImageModel->getLast($GLOBALS['nb_img_on_gallery_load'])
         );
 
         $this->set($v);
         $this->render('gallery.php');
     }
 
-    public function load($actual_nb_image)
+    public function loadMore($actual_nb_image, $nb_to_load)
     {
+        $GLOBALS['nb_img_on_gallery_load'] = $nb_to_load;
         $this->loadModel('ImageModel');
-        $images = $this->ImageModel->loadMore($actual_nb_image, 3);
-
-        echo json_encode($images);
+        $images = $this->ImageModel->loadMore($actual_nb_image, $nb_to_load);
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        {
+            if (!empty($images))
+                echo json_encode($images);
+            else
+                echo json_encode(false);
+            die();
+        }
+        else
+        {
+            $v['gallery'] = array(
+                'images' => $images
+            );
+            $this->set($v);
+            $this->render('gallery.php');
+        }
     }
 
     public function getLast()

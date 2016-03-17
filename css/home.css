@@ -55,3 +55,9 @@ img.grayscale:hover {
     filter: none;
     -webkit-filter: grayscale(0%);
 }
+
+.empty {
+    height: 50px;
+    width:100%;
+    clear:both;
+}

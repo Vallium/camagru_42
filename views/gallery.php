@@ -7,6 +7,15 @@
 
 </head>
 <body>
-    <div id="wrap"></div>
-    <div style="height: 500px"></div>
+    <?php //print_r($gallery);?>
+    <input id="nb_img_on_gallery_load" type="hidden" value="<?=$GLOBALS['nb_img_on_gallery_load']?>">
+    <div id="wrap">
+        <?php foreach($gallery['images'] as $img):?>
+            <a href="/gallery/pic/<?=$img->id;?>"><img src="/img/uploads/<?=$img->id;?>.jpg" class="grayscale"></a>
+        <?php endforeach;?>
+    </div>
+    <form id="formLoadMore" action="/gallery/loadMore/0/<?=$GLOBALS['nb_img_on_gallery_load'] + 3?>">
+        <button class="button orange">LOAD MORE</button>
+    </form>
+    <div class="empty"></div>
 </body>

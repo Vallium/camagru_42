@@ -22,22 +22,25 @@ function getXMLHttpRequest() {
     return xhr;
 }
 
-function ajax()
+function ajaxLoadMore()
 {
     var xhr = getXMLHttpRequest();
-    xhr.open("GET", "/gallery/load/" + imgNb, false);
-    //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
+    xhr.open("GET", "/gallery/loadMore/" + imgNb + "/3", false);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var json  = JSON.parse(xhr.responseText);
-            for (var i = 0; i < json.length; i++) {
-                //wrap.innerHTML += '<div class="col-' + (i + 1) + '"><img src="/img/uploads/' + json[i].id + '.jpg" class="grayscale"></img></div>';
-                wrap.innerHTML += '<a href="/gallery/pic/' +json[i].id + '"><img src="/img/uploads/' + json[i].id + '.jpg" class="grayscale"></img></a>';
+            console.log(json);
+            if (json == false)
+                document.getElementById('formLoadMore').style.display = 'none';
+            else
+            {
+                for (var i = 0; i < json.length; i++)
+                    wrap.innerHTML += '<a href="/gallery/pic/' +json[i].id + '"><img src="/img/uploads/' + json[i].id + '.jpg" class="grayscale"></img></a>';
+                imgNb += 3;
             }
-            imgNb += 3;
         }
-    }
+    };
 
     xhr.send();
 }
@@ -52,10 +55,18 @@ function yHandler()
 
     if (y >= contentHeight)
     {
-        ajax();
+        ajaxLoadMore();
     }
 }
 
-imgNb = 0;
-window.onscroll = yHandler;
-window.onload = ajax;
+window.onload = function () {
+    imgNb = parseInt(document.getElementById('nb_img_on_gallery_load').value);
+
+    window.onscroll = yHandler;
+
+    document.getElementById("formLoadMore").addEventListener("submit", function(){
+        event.preventDefault();
+
+        ajaxLoadMore();
+    });
+};
