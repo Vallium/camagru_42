@@ -32,6 +32,11 @@ abstract class Model
             $this->create($obj);
     }
 
+    public function getLastInsertId()
+    {
+        return $this->db->lastInsertId();
+    }
+
     public function getDb() { return $this->db; }
 
 //    abstract public function update();

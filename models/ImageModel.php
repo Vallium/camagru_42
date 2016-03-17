@@ -26,6 +26,24 @@ class ImageModel extends Model
         return $db->exec($req);
     }
 
+    /**
+     * @param $obj \item\Img
+     */
+    protected function create(\item\Img $img)
+    {
+        $req = "INSERT INTO $this->table (users_id) VALUE (:users_id)";
+
+        $this->dbConnexion();
+        try {
+            $r = $this->db->prepare($req);
+            $r->bindValue(':users_id', $img->getUsersId(), \PDO::PARAM_INT);
+            $r->execute();
+        } catch (\PDOException $e){
+            print 'Erreur !:'.$e->getMessage().'<br />';
+        }
+
+    }
+
     public function getImageById($id)
     {
         $req = array(

@@ -57,3 +57,9 @@ a.svg:after {
     bottom: 0;
     left: 0;
 }
+
+.empty {
+    height: 50px;
+    width:100%;
+    clear:both;
+}

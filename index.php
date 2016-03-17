@@ -14,7 +14,6 @@ require('core/Model.php');
 function __autoload($class)
 {
     $path = ROOT.DS.str_replace('\\', DS, $class).'.php';
-    //echo $path;
     if (file_exists($path))
         require $path;
 }
