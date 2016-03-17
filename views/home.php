@@ -6,11 +6,11 @@
 <body>
     <h1><span>L</span><span>E</span><span>S</span> <span>D</span><span>E</span><span>R</span><span>N</span><span>I</span><span>E</span><span>R</span><span>S</span> <span>M</span><span>O</span><span>N</span><span>T</span><span>A</span><span>G</span><span>E</span><span>S</span></h1>
     <div class="images-holder">
-        <?php for($i = 1; $i <= 12; $i++): ?>
-            <a href="/gallery/pic/<?=$home['images'][$i - 1]->id?>">
-                <img src="/img/uploads/<?=$home['images'][$i - 1]->id?>.jpg" alt="" class="grayscale">
+        <?php foreach($home['images'] as $img): ?>
+            <a href="/gallery/pic/<?=$img->id?>">
+                <img src="/img/uploads/<?=$img->id?>.jpg" alt="" class="grayscale">
             </a>
-        <?php endfor; ?>
+        <?php endforeach; ?>
     </div>
     <div class="empty"></div>
 </body>

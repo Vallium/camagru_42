@@ -1,8 +1,7 @@
-.contentHolder {
-    position: relative;;
-    height: 100%;
-    width: 1200px;
-    margin: auto;
+.holder {
+    width: 960px;
+    margin: 0 auto;
+    margin-top: 20px;
 }
 
 section {

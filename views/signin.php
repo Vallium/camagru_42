@@ -1,13 +1,12 @@
 <head>
     <link href="/css/signin.css" rel="stylesheet" type="text/css">
     <title>Camagru - Sign-in</title>
+    <script src="/scripts/signin.js"></script>
 </head>
-
-<script src="/scripts/signin.js"></script>
-
-<div class="contentHolder">
-    <section>
-        <article>
+<body>
+    <div class="holder">
+        <section>
+            <article>
                 <h1>SIGN-IN</h1>
                 <form method="post" action="">
                     <div>
@@ -24,6 +23,7 @@
                     </div>
                     <button class="button orange">CONNECT</button>
                 </form>
-        </article>
-    </section>
-</div>
+            </article>
+        </section>
+    </div>
+</body>

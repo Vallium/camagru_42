@@ -101,6 +101,8 @@ nav.secondary-nav img {
 nav.secondary-nav a {
     vertical-align: top;
     color: #000;
+    border-left: 1.5px solid transparent;
+    border-right: 1.5px solid transparent;
     padding: 0 5px;
     font-size: 0.9em;
     font-family: GothamLight, sans-serif; }
