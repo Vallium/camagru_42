@@ -14,6 +14,7 @@
                             <label>FILE TO UPLOAD</label>
                             <input type="file" name="fileToUpload">
                         </div>
+                        <input type="hidden" name="MAX_UPLOAD_SIZE" value="<?=$GLOBALS['MAX_UPLOAD_SIZE'];?>">
                         <button class="button orange">UPLOAD</button>
                     </form>
                 <?php else:?>

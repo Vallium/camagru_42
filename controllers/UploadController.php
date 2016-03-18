@@ -4,6 +4,8 @@ namespace controller;
 
 use item\Img;
 
+$MAX_UPLOAD_SIZE = 10485760;
+
 class UploadController extends Controller
 {
     public function index()
@@ -20,6 +22,10 @@ class UploadController extends Controller
 
             if ($_FILES['fileToUpload']['error'] > 0)
                 $errors['upload'] = true;
+            if ($_FILES['fileToUpload']['type'] != 'image/jpeg')
+                $errors['type'] = true;
+            if ($_FILES['fileToUpload']['size'] > $GLOBALS['MAX_UPLOAD_SIZE'])
+                $errors['size'] = true;
 
             if (empty($errors))
             {
@@ -33,5 +39,6 @@ class UploadController extends Controller
                 move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $postName);
             }
         }
+        $this->render('upload.php');
     }
 }
