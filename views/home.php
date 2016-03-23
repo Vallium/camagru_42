@@ -7,8 +7,14 @@
     <h1><span>L</span><span>E</span><span>S</span> <span>D</span><span>E</span><span>R</span><span>N</span><span>I</span><span>E</span><span>R</span><span>S</span> <span>M</span><span>O</span><span>N</span><span>T</span><span>A</span><span>G</span><span>E</span><span>S</span></h1>
     <div class="images-holder">
         <?php foreach($home['images'] as $img): ?>
+            <?php
+            if (file_exists(ROOT.'img'.DS.'uploads'.DS.$img->id.'.jpg'))
+                $ext = 'jpg';
+            elseif (file_exists(ROOT.'img'.DS.'uploads'.DS.$img->id.'.png'))
+                $ext = 'png';
+            ?>
             <a href="/gallery/pic/<?=$img->id?>">
-                <img src="/img/uploads/<?=$img->id?>.jpg" alt="" class="grayscale">
+                <img src="/img/uploads/<?=$img->id?>.<?=$ext?>" alt="" class="grayscale">
             </a>
         <?php endforeach; ?>
     </div>

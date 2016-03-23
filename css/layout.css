@@ -30,7 +30,7 @@
     font-style: normal;
 }
 
-.like {
+.fa {
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
     font-size: inherit;
@@ -41,6 +41,10 @@
 
 .like:before {
     content: "\f164";
+}
+
+.cross:before {
+    content: "\f00d";
 }
 
 body {

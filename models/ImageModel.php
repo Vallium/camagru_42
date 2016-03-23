@@ -74,5 +74,9 @@ class ImageModel extends Model
         return $this->get($req);
     }
 
+    public function deleteImage($id)
+    {
+        $this->delete($id);
+    }
 
 }

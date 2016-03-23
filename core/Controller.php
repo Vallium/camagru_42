@@ -6,7 +6,17 @@ abstract class Controller
     private $vars = array();
     private $layout = 'default';
 
-    abstract public function index();
+//    abstract public function index();
+
+    public function index()
+    {
+        $this->render('404.php');
+    }
+
+    public function notFound()
+    {
+        $this->render('404.php');
+    }
 
     public function set(array $var)
     {

@@ -12,7 +12,13 @@
     <div class="images-holder">
         <div id="wrap">
             <?php foreach($gallery['images'] as $img):?>
-                <a href="/gallery/pic/<?=$img->id;?>"><img src="/img/uploads/<?=$img->id;?>.jpg" class="grayscale"></a>
+                <?php
+                if (file_exists(ROOT.'img'.DS.'uploads'.DS.$img->id.'.jpg'))
+                    $ext = 'jpg';
+                elseif (file_exists(ROOT.'img'.DS.'uploads'.DS.$img->id.'.png'))
+                    $ext = 'png';
+                ?>
+                <a href="/gallery/pic/<?=$img->id;?>"><img src="/img/uploads/<?=$img->id;?>.<?=$ext?>" class="grayscale"></a>
             <?php endforeach;?>
         </div>
         <form id="formLoadMore" action="/gallery/loadMore/0/<?=$GLOBALS['nb_img_on_gallery_load'] + 3?>">

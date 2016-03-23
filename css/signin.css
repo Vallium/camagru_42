@@ -55,6 +55,7 @@ section form .toSubscribe a:hover {
 
 
 .button{
+    cursor: pointer;
     position: relative;
     display:block;
     background: transparent;

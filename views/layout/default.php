@@ -19,7 +19,8 @@
                                 <img src="/img/users/0.png" alt="Pic">
                             <?php endif;?>
                             <a href="/user/profile/<?= $_SESSION['id']?>">PROFILE</a>
-                            <a href="/upload">TAKE A PICTURE</a>
+                            <a href="/upload">UPLOAD A FILE</a>
+                            <a href="/upload/takePicture">TAKE A PICTURE</a>
                             <a href="/user/logout">LOGOUT</a>
                         <?php else : ?>
                         <a href="/user/signin">SIGN-IN</a> / <a href="/user/signup">SIGN-UP</a>

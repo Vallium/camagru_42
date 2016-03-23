@@ -22,6 +22,14 @@ function getXMLHttpRequest() {
     return xhr;
 }
 
+function fileExists(url)
+{
+    var http = getXMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status != 404;
+}
+
 function ajaxLoadMore()
 {
     var xhr = getXMLHttpRequest();
@@ -35,7 +43,14 @@ function ajaxLoadMore()
             else
             {
                 for (var i = 0; i < json.length; i++)
-                    wrap.innerHTML += '<a href="/gallery/pic/' +json[i].id + '"><img src="/img/uploads/' + json[i].id + '.jpg" class="grayscale"></img></a>';
+                {
+                    var ext;
+                    if (fileExists('/img/uploads/' + json[i].id + '.jpg'))
+                        ext = '.jpg';
+                    else if (fileExists('/img/uploads/' + json[i].id + '.png'))
+                        ext = '.png';
+                    wrap.innerHTML += '<a href="/gallery/pic/' + json[i].id + '"><img src="/img/uploads/' + json[i].id + ext + '" class="grayscale"></img></a>';
+                }
                 imgNb += 3;
             }
         }

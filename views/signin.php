@@ -11,7 +11,7 @@
                 <form method="post" action="">
                     <div>
                         <label>USERNAME</label>
-                        <input type="text" name="username">
+                        <input type="text" name="username" autofocus>
                     </div>
                     <div>
                         <label>PASSWORD</label>

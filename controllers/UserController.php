@@ -10,16 +10,16 @@ use item\User;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        // TODO: Implement index() method.
-    }
+//    public function index()
+//    {
+//    }
 
     public function signup()
     {
         if (isset($_SESSION['username']))
         {
-            $this->render('home.php');
+            header('Location: '.WEBROOT);
+//            $this->render('home.php');
             return;
         }
 
@@ -47,6 +47,8 @@ class UserController extends Controller
                 $this->UserModel->save($user);
                 if (!$this->UserModel->getDB()->lastInsertId())
                     $errors['exist'] = true;
+
+                header('Location: '.WEBROOT);
             }
 //            else
 //                print_r($errors);
@@ -58,7 +60,7 @@ class UserController extends Controller
     {
         if (isset($_SESSION['username']) && $_SESSION['loggedin'] == true)
         {
-            header('Location: http://camagru.alliot.me');
+            header('Location: '.WEBROOT);
 //            $this->render('home.php');
             return;
         }
@@ -86,6 +88,8 @@ class UserController extends Controller
                         $_SESSION['loggedin'] = true;
                         $_SESSION['id'] = $user['id'];
                         $_SESSION['username'] = $_POST['username'];
+
+                        header('Location: '.WEBROOT);
                     }
                     else
                         echo 'bad pass';
@@ -102,7 +106,7 @@ class UserController extends Controller
         session_destroy();
 //        $this->render('home.php');
 //        TODO : change url in header calling
-        header('Location: http://camagru.alliot.me');
+        header('Location: '.WEBROOT);
 
     }
 

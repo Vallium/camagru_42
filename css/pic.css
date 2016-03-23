@@ -14,11 +14,11 @@ h6 {
     margin-bottom: 1em;
 }
 
-.like {
+.like, .cross {
     font-size: 18px;
 }
 
-.like:hover, .like.active:hover {
+.fa:hover, .fa.active:hover {
     color: rgba(255, 104, 0, 0.5);
     cursor: pointer;
 }
