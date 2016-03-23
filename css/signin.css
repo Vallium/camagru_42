@@ -2,13 +2,10 @@
     width: 960px;
     margin: 0 auto;
     margin-top: 20px;
-}
-
-section {
     text-align: center;
 }
 
-section h1 {
+.holder h1 {
     border-bottom: 1px solid #000;
     margin-bottom: 0.8em;
     padding-bottom: 0.5em;
@@ -16,7 +13,7 @@ section h1 {
     margin-top: 1em;
 }
 
-section form {
+.holder form {
     padding: 30px;
     display: inline-block;
     line-height: 20px;
@@ -25,7 +22,7 @@ section form {
     font-size: 16px;
 }
 
-section form label {
+.holder form label {
     width: 48%;
     text-align: center;
     display: inline-block;
@@ -33,23 +30,23 @@ section form label {
     color: #000;
 }
 
-section form input {
+.holder form input {
     width: 48%;
     font-size: 16px;
     text-align: center;
     background-color: #525252;
 }
 
-section form .toSubscribe {
+.holder form .toSubscribe {
     margin-top: 2em;
     text-align: center;
 }
 
-section form .toSubscribe a {
+.holder form .toSubscribe a {
     color: #000;
 }
 
-section form .toSubscribe a:hover {
+.holder form .toSubscribe a:hover {
     color: #ff6800;
 }
 
