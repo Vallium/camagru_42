@@ -18,6 +18,8 @@ class UserModel extends Model
                       password VARCHAR(255) NULL,
                       email VARCHAR(255) NULL,
                       is_admin TINYINT(1) NULL DEFAULT 0,
+                      is_activated TINYINT(1) NULL DEFAULT 0,
+                      security_hash VARCHAR(255) NULL,
                       created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
                       PRIMARY KEY (id),
                       UNIQUE INDEX username_UNIQUE (username ASC),

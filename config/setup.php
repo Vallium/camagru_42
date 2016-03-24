@@ -44,6 +44,8 @@
 //        require '../models/CommentModel.php';
 //        \model\CommentModel::createTable($pdo, $schema);
 //
+//        echo '<h1>Init Database OK!</h1>';
+//
 //    } catch (PDOException $e) {
 //        echo 'Connection failed: '.$e->getMessage();
 //    }
