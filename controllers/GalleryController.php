@@ -61,12 +61,19 @@ class GalleryController extends Controller
         $this->loadModel('ImageModel');
         $this->loadModel('CommentModel');
         $this->loadModel('LikeModel');
+        $this->loadModel('UserModel');
 
         $v['pic'] = array(
             'picture' => $this->ImageModel->getImageById($id),
             'comments' => $this->CommentModel->getLastComments($id, 20),
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
+//        echo '<pre>';
+//        print_r($v['pic']['picture'][0]->users_id);
+//        die;
+
+        $v['pic']['author'] = $this->UserModel->getById($v['pic']['picture'][0]->users_id);
+
 
         if (isset($_SESSION['loggedin']))
             $v['pic']['is_liked'] = $this->LikeModel->isLiked($id, $_SESSION['id']);
@@ -97,8 +104,9 @@ class GalleryController extends Controller
 
                     $json = true;
                 }
-            } else
-                $json = false;
+                else
+                    $json = false;
+            }
         }
         else
             $json = "noUserConnected";

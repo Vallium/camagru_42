@@ -68,11 +68,16 @@ abstract class Model
             $request .= ' OFFSET '. $param['offset'];
 
         $this->dbConnexion();
-        $return = $this->db->prepare($request);
-        $return->execute();
-        $return->setFetchMode(\PDO::FETCH_OBJ);
-        $this->dbKill();
-        return ($return->fetchAll());
+        try
+        {
+            $return = $this->db->prepare($request);
+            $return->execute();
+            $return->setFetchMode(\PDO::FETCH_OBJ);
+            $this->dbKill();
+            return ($return->fetchAll());
+        } catch (\PDOException $e) {
+            print 'Erreur !:'.$e->getMessage().'<br />';
+        }
     }
 
     protected function delete($id)

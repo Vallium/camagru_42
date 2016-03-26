@@ -7,7 +7,9 @@ class User
             $username,
             $password,
             $email,
-            $is_admin;
+            $is_admin,
+            $is_activated,
+            $security_hash;
 
     /**
      * @return mixed
@@ -87,5 +89,37 @@ class User
     public function setIsAdmin($is_admin)
     {
         $this->is_admin = $is_admin;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsActivated()
+    {
+        return $this->is_activated;
+    }
+
+    /**
+     * @param mixed $is_activated
+     */
+    public function setIsActivated($is_activated)
+    {
+        $this->is_activated = $is_activated;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecurityHash()
+    {
+        return $this->security_hash;
+    }
+
+    /**
+     * @param mixed $security_hash
+     */
+    public function setSecurityHash($security_hash)
+    {
+        $this->security_hash = $security_hash;
     }
 }

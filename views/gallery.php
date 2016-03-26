@@ -8,8 +8,10 @@
 </head>
 <body>
     <?php //print_r($gallery);?>
-    <input id="nb_img_on_gallery_load" type="hidden" value="<?=$GLOBALS['nb_img_on_gallery_load']?>">
-    <div class="images-holder">
+    <div class="holder">
+        <h1>GALLERY</h1>
+<!--        <a href="/user/sendConfirmationMail" class="button orange">TEST EMAIL</a>-->
+        <input id="nb_img_on_gallery_load" type="hidden" value="<?=$GLOBALS['nb_img_on_gallery_load']?>">
         <div id="wrap">
             <?php foreach($gallery['images'] as $img):?>
                 <?php

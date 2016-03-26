@@ -14,6 +14,10 @@ h6 {
     margin-bottom: 1em;
 }
 
+h6 a:hover {
+    color: #ff6800;
+}
+
 .like, .cross {
     font-size: 18px;
 }
@@ -62,4 +66,29 @@ a.svg:after {
     height: 50px;
     width:100%;
     clear:both;
+}
+
+#formComment input {
+    height: 20px;
+    width: 48%;
+    font-size: 16px;
+    /*text-align: center;*/
+    background-color: #525252;
+}
+
+#formComment button {
+    color: #ff6800;
+    background-color: transparent;
+    border: 1px solid #ff6800;
+    width: 120px;
+    height: 20px;
+}
+
+#formComment button:hover {
+    color: black;
+    background-color: #ff6800;
+    border: 1px solid #ff6800;
+    width: 120px;
+    height: 20px;
+    cursor: pointer;
 }

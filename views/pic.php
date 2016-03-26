@@ -6,7 +6,10 @@
 </head>
 
 <body>
-    <?php //print_r($pic);?>
+    <?php
+//    echo '<pre>';
+//    print_r($pic);
+    ?>
     <div id="divToScroll">
         <div class="left-col">
             <?php
@@ -37,19 +40,24 @@
                 </form>
             <?php endif;?>
             <?php $imgDate = new DateTime($pic['picture'][0]->created_at);?>
-            <h6>Posted on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?></h6>
+            <h6>Posted by
+                <a href="/user/profile/<?=$pic['author'][0]->id;?>"><?=$pic['author'][0]->username;?></a>
+                on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?>
+            </h6>
             <h1>Commentaires</h1>
             <div id="comments">
                 <?php foreach($pic['comments'] as $comment):?>
                     <p><?=htmlspecialchars($comment->content);?></p>
                 <?php endforeach;?>
             </div>
-                <form id="formComment" method="post" action="/gallery/postComment" <?php if (!isset($_SESSION['loggedin'])):?>style="display: none;"<?php endif;?>>
-                    <input id="inCom" type="text" name="content">
+            <?php if (isset($_SESSION['loggedin'])):?>
+                <form id="formComment" method="post" action="/gallery/postComment">
+                    <input id="inCom" type="text" name="content" placeholder="Post your comment...">
                     <input type="hidden" name="users_id" value="<?=$_SESSION['id'];?>">
                     <input type="hidden" name="images_id" value="<?=$pic['picture'][0]->id;?>">
-                    <button type="submit">Post</button>
+                    <button type="submit"> POST COMMENT </button>
                 </form>
+            <?php endif;?>
         </div>
     </div>
     <div class="empty"></div>

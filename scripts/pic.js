@@ -41,11 +41,10 @@ function ajaxPostCom(oFormElem)
             var json = JSON.parse(xhr.responseText);
 
             if (json == true)
-            {
                 document.getElementById('comments').innerHTML += '<p>' + escapeHtml(document.getElementById('inCom').value) + '</p>';
-            }
             else if (json == "noUserConnected")
                 alert('You must be connected to post a comment');
+
             document.getElementById('inCom').value = "";
         }
     };
@@ -102,18 +101,20 @@ function ajaxDelImg(oFormElem)
 window.onload = function() {
     document.getElementById("divToScroll").scrollIntoView();
 
-    document.getElementById("formComment").addEventListener("submit", function(){
-        event.preventDefault();
+    if (document.getElementById("formComment"))
+        document.getElementById("formComment").addEventListener("submit", function(){
+            event.preventDefault();
 
-        ajaxPostCom(this);
-    });
+            ajaxPostCom(this);
+        });
 
-    document.getElementById("formDelete").addEventListener("submit", function(){
-        event.preventDefault();
+    if (document.getElementById("formDelete"))
+        document.getElementById("formDelete").addEventListener("submit", function(){
+            event.preventDefault();
 
-        if (confirm('Are you sure you want to delete this image? You will not undo this action!'))
-            ajaxDelImg(this);
-    });
+            if (confirm('Are you sure you want to delete this image? You will not undo this action!'))
+                ajaxDelImg(this);
+        });
 
     document.getElementById("likeButton").addEventListener("click", function(){
         event.preventDefault();

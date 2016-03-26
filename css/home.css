@@ -4,9 +4,8 @@ h1 {
 
 img {
     width: 200px;
-    border-radius: 3px;
+    border-radius: 4px;
     height: auto;
-    float: left;
     margin-right: 6px;
     margin-left: 6px;
     margin-bottom: 12px;
@@ -17,10 +16,19 @@ span:hover {
     color: rgba(255, 104, 0, 0.7);
 }
 
-.images-holder {
+.holder {
     width: 960px;
     margin: 0 auto;
+    text-align: center;
     margin-top: 20px;
+}
+
+.holder h1 {
+    border-bottom: 1px solid #000;
+    margin-bottom: 0.8em;
+    padding-bottom: 0.5em;
+    font-size: 1.5em;
+    margin-top: 1em;
 }
 
 .col-1, .col-2, .col-3 {
