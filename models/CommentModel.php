@@ -55,6 +55,15 @@ class CommentModel extends Model
 
     }
 
+    public function getById($id)
+    {
+        $req = array(
+            'where' => 'id='.$id
+        );
+
+        return $this->get($req);
+    }
+
     public function getCommentsByImageId($id)
     {
         $req = array(

@@ -1,20 +1,34 @@
 
-img {
+.first-col img {
     width: 100%;
-    margin-left: 20px;
+    /*margin-left: 20px;*/
 }
 
 a {
     color:black;
 }
 
-h6 {
-    border-bottom: 1px solid #000;
-    padding-bottom: 0.5em;
-    margin-bottom: 1em;
+h2 {
+    text-align: left;
+    font-size: 2em;
+    font-family: GothamMedium;
+}
+
+h4 {
+    color: gray;
+    font-size: 9px;
 }
 
 h6 a:hover {
+    color: #ff6800;
+    /*border-bottom: 1px solid #ff6800;*/
+}
+
+a.comLink {
+    color: #323232;
+}
+
+a.comLink:hover {
     color: #ff6800;
 }
 
@@ -28,18 +42,19 @@ h6 a:hover {
 }
 
 .like.active {
-    color: rgb(255, 104, 0);
+    color: #ff6800;
 }
 
-.left-col {
+.first-col {
     width: 48%;
-    margin-right: 20px;
+    /*border-right: 1px solid black;*/
     float: left;
+    margin-right: 10px;
 }
 
-.right-col {
+.sec-col {
     width: 48%;
-    margin-left: 20px;
+    margin-left: 10px;
     float: left;
 }
 
@@ -62,17 +77,18 @@ a.svg:after {
     left: 0;
 }
 
-.empty {
-    height: 50px;
-    width:100%;
-    clear:both;
+
+#formComment {
+    margin-top: 3px;
+    border: 2px solid gray;
+    border-radius: 2px;
+    padding: 3px;
 }
 
 #formComment input {
     height: 20px;
-    width: 48%;
+    width: 75%;
     font-size: 16px;
-    /*text-align: center;*/
     background-color: #525252;
 }
 
@@ -80,15 +96,17 @@ a.svg:after {
     color: #ff6800;
     background-color: transparent;
     border: 1px solid #ff6800;
-    width: 120px;
+    width: 24%;
     height: 20px;
+    float: right;
 }
 
 #formComment button:hover {
     color: black;
     background-color: #ff6800;
-    border: 1px solid #ff6800;
-    width: 120px;
-    height: 20px;
     cursor: pointer;
+}
+
+form input {
+    vertical-align: bottom;
 }

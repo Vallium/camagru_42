@@ -31,9 +31,13 @@ unset($url[0]);
 unset($url[1]);
 
 if (!file_exists('controllers'.DS.$controller.'.php'))
-    echo 'erreur 404';
-else
 {
+    $controller = 'HomeController';
+    $method = 'notFound';
+//echo 'erreur 404';
+}
+//else
+//{
     require('controllers' . DS . $controller . '.php');
     $controller = '\controller\\' . $controller;
     $controller = new $controller();
@@ -41,4 +45,4 @@ else
     if (!method_exists($controller, $method))
         $method = 'notFound';
     call_user_func_array(array($controller, $method), $url);
-}
+//}

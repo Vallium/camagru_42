@@ -92,6 +92,10 @@ table {
     content: "\f00d";
 }
 
+.pencil:before {
+    content: "\f044";
+}
+
 /* Layout */
 
 body {
@@ -189,7 +193,7 @@ nav.primary-nav li a {
     transition: transform .8s ease-in-out;
 }
 
-nav.primary-nav li a:hover {
+nav.primary-nav li a:hover, nav.primary-nav li a:focus {
     border-bottom: 1.5px solid #ff6800;
     color: rgba(255, 104, 0, 0.6);
     -webkit-transform: rotate(360deg);
@@ -207,4 +211,25 @@ nav.primary-nav li:last-child {
     background-size: cover;
     background-position: 50% 50%;
     background-repeat: no-repeat;
+}
+
+.holder {
+    width: 960px;
+    margin: 0 auto;
+    /*text-align: center;*/
+    margin-top: 20px;
+}
+
+.holder h1 {
+    border-bottom: 1px solid #000;
+    margin-bottom: 0.8em;
+    padding-bottom: 0.5em;
+    font-size: 1.5em;
+    margin-top: 1em;
+}
+
+.empty {
+    height: 50px;
+    width:100%;
+    clear:both;
 }

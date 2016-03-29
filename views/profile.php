@@ -5,8 +5,8 @@
 <body>
     <?php //print_r($profile) ?>
     <div class="holder">
-        <?php if (!empty($profile)):?>
-        <div class="top">
+        <?php if (!empty($profile['user'])):?>
+        <div class="first-col">
             <div class="picture">
                 <div class="hexagon hexagon2">
                     <div class="hexagon-in1">
@@ -23,18 +23,19 @@
                 </div>
             </div>
             <div class="user">
-                <h1><?= strtoupper($profile['user'][0]->username)?></h1>
+                <h2><?= strtoupper($profile['user'][0]->username)?></h2>
                 <?php $date = new DateTime($profile['user'][0]->created_at); ?>
                 <h6>Member since <?= date('l jS \of F Y', $date->getTimestamp());?></h6>
-                <br>
+                <span class="fa pencil"></span>
             </div>
             <div class="clear"></div>
         </div>
-        <?php else :?>
-        <div>
-            USER NOT FOUND
+        <div class="sec-col">
         </div>
+        <?php else :?>
+        <h1>USER NOT FOUND</h1>
         <?php endif; ?>
     </div>
+    <div class="empty"></div>
 </body>
 <script src="/scripts/profile.js"></script>

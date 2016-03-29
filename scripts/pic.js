@@ -37,11 +37,17 @@ function ajaxPostCom(oFormElem)
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState == 4 && xhr.status == 200)
+        {
             var json = JSON.parse(xhr.responseText);
 
-            if (json == true)
-                document.getElementById('comments').innerHTML += '<p>' + escapeHtml(document.getElementById('inCom').value) + '</p>';
+            if (json['status'] == true)
+            {
+                document.getElementById('comments').innerHTML += '<p><a class="comLink" href="/user/profile/' + json['authorId'] + '">' + json['author'] + '</a>: ' + escapeHtml(document.getElementById('inCom').value) + '</p>';
+                document.getElementById('comments').innerHTML += '<h4>' + json['date'] + '</h4>';
+                var comDiv = document.getElementById("comments");
+                comDiv.scrollTop = comDiv.scrollHeight;
+            }
             else if (json == "noUserConnected")
                 alert('You must be connected to post a comment');
 
@@ -58,7 +64,8 @@ function ajaxLike()
     xhr.open("POST", "/gallery/like/" + document.getElementById('img-id').value, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState == 4 && xhr.status == 200)
+        {
             var json  = JSON.parse(xhr.responseText);
             var likeButton = document.getElementById("likeChar");
 
@@ -87,11 +94,15 @@ function ajaxDelImg(oFormElem)
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState == 4 && xhr.status == 200)
+        {
             var json = JSON.parse(xhr.responseText);
 
             if (json == true)
+            {
                 alert('Your image was delete with success!');
+                window.location.replace('/home');
+            }
         }
     };
 
@@ -99,7 +110,10 @@ function ajaxDelImg(oFormElem)
 }
 
 window.onload = function() {
-    document.getElementById("divToScroll").scrollIntoView();
+    document.getElementById("holder").scrollIntoView();
+
+    var comDiv = document.getElementById("comments");
+    comDiv.scrollTop = comDiv.scrollHeight;
 
     if (document.getElementById("formComment"))
         document.getElementById("formComment").addEventListener("submit", function(){
@@ -118,7 +132,9 @@ window.onload = function() {
 
     document.getElementById("likeButton").addEventListener("click", function(){
         event.preventDefault();
-
+        //if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        //    alert('detect mobile');
+        //}
         ajaxLike();
     });
 

@@ -18,49 +18,6 @@ class UploadController extends Controller
         $this->render('takePicture.php');
     }
 
-    public function uploadImage()
-    {
-        if (isset($_POST) && isset($_SESSION['loggedin']))
-        {
-            $errors = array();
-            $this->loadModel('ImageModel');
-
-            if ($_FILES['fileToUpload']['error'] > 0)
-                $errors['upload'] = true;
-            if ($_FILES['fileToUpload']['type'] != 'image/jpeg' && $_FILES['fileToUpload']['type'] != 'image/png')
-                $errors['type'] = true;
-            if ($_FILES['fileToUpload']['size'] > $GLOBALS['MAX_UPLOAD_SIZE'])
-                $errors['size'] = true;
-
-            if (empty($errors))
-            {
-                $img = new Img();
-
-                $img->setUsersId($_SESSION['id']);
-                $this->ImageModel->save($img);
-                $postedId = $this->ImageModel->getLastInsertId();
-
-                if ($_FILES['fileToUpload']['type'] == 'image/jpeg')
-                    $ext = '.jpg';
-                else
-                    $ext = '.png';
-                $postName = ROOT.'img/uploads/'.$postedId.$ext;
-                move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $postName);
-            }
-
-            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
-            {
-                if (!empty($errors))
-                    echo json_encode($errors);
-                else
-                    echo json_encode(true);
-                die();
-            }
-        }
-        $this->render('home.php');
-    }
-
-
     private function mergeImages($imgId, $filterId)
     {
         //define the width and height of our images
@@ -93,6 +50,44 @@ class UploadController extends Controller
         imagedestroy($a);
         imagedestroy($b);
         imagedestroy($dest_image);
+    }
+
+    public function uploadImage()
+    {
+        if (isset($_POST) && isset($_SESSION['loggedin']))
+        {
+            $errors = array();
+            $this->loadModel('ImageModel');
+
+            if ($_FILES['fileToUpload']['error'] > 0)
+                $errors['upload'] = true;
+            if ($_FILES['fileToUpload']['type'] != 'image/jpeg' && $_FILES['fileToUpload']['type'] != 'image/png')
+                $errors['type'] = true;
+            if ($_FILES['fileToUpload']['size'] > $GLOBALS['MAX_UPLOAD_SIZE'])
+                $errors['size'] = true;
+
+            if (empty($errors))
+            {
+                $img = new Img();
+
+                $img->setUsersId($_SESSION['id']);
+                $this->ImageModel->save($img);
+                $postedId = $this->ImageModel->getLastInsertId();
+
+                imagepng(imagecreatefromstring(file_get_contents($_FILES['fileToUpload']['tmp_name'])), ROOT.'img/uploads/'.$postedId.'.png');
+                $this->mergeImages($postedId, $_POST['filterId']);
+            }
+
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            {
+                if (!empty($errors))
+                    echo json_encode($errors);
+                else
+                    echo json_encode(true);
+                die();
+            }
+        }
+        $this->render('home.php');
     }
 
     public function uploadImageFromWebcam()

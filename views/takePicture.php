@@ -1,6 +1,6 @@
 <head>
     <link href="/css/uploadFile.css" rel="stylesheet" type="text/css">
-    <title>Camagru - Upload a picture</title>
+    <title>Camagru - Take a picture</title>
     <script src="/scripts/takePicture.js"></script>
 </head>
 <body>
@@ -13,7 +13,7 @@
         </div>
         <button id="startbutton" class="button orange">TAKE PICTURE</button>
         <canvas id="canvas"></canvas>
-        <img src="http://placekitten.com/g/320/261" id="photo" alt="photo" style="display: none;">
+        <img src="#" id="photo" alt="photo" style="display: none;">
         <form id="uploadFromWebcamForm" method="post" action="/upload/uploadImageFromWebcam" enctype="multipart/form-data">
             <input type="hidden" id="base64img" name="base64img" value="none">
             <input type="hidden" name="filterId" value="1">

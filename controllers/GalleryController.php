@@ -65,7 +65,7 @@ class GalleryController extends Controller
 
         $v['pic'] = array(
             'picture' => $this->ImageModel->getImageById($id),
-            'comments' => $this->CommentModel->getLastComments($id, 20),
+            'comments' => $this->CommentModel->getLastComments($id, 200),
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
 //        echo '<pre>';
@@ -74,6 +74,9 @@ class GalleryController extends Controller
 
         $v['pic']['author'] = $this->UserModel->getById($v['pic']['picture'][0]->users_id);
 
+
+        foreach ($v['pic']['comments'] as $com)
+            $com->users_id = $this->UserModel->getById($com->users_id)[0];
 
         if (isset($_SESSION['loggedin']))
             $v['pic']['is_liked'] = $this->LikeModel->isLiked($id, $_SESSION['id']);
@@ -102,7 +105,18 @@ class GalleryController extends Controller
                     $comment->setUsersId($_POST['users_id']);
                     $this->CommentModel->save($comment);
 
-                    $json = true;
+                    $comment = $this->CommentModel->getById($this->CommentModel->getDB()->lastInsertId());
+
+                    $date = new \DateTime($comment[0]->created_at);
+                    $json['date'] = date('l jS \of F Y H:i:s', $date->getTimestamp());
+                    $date = null;
+
+                    $this->loadModel('UserModel');
+
+                    $author = $this->UserModel->getById($comment[0]->users_id);
+                    $json['author'] = $author[0]->username;
+                    $json['authorId'] = $comment[0]->users_id;
+                    $json['status'] = true;
                 }
                 else
                     $json = false;

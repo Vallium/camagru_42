@@ -10,8 +10,8 @@
 //    echo '<pre>';
 //    print_r($pic);
     ?>
-    <div id="divToScroll">
-        <div class="left-col">
+    <div class="holder" id="holder">
+        <div class="first-col">
             <?php
             if (file_exists(ROOT.'img'.DS.'uploads'.DS.$pic['picture'][0]->id.'.jpg'))
                 $ext = 'jpg';
@@ -20,7 +20,7 @@
             ?>
             <img id="dblClickOnImg" src="/img/uploads/<?= $pic['picture'][0]->id?>.<?=$ext;?>" alt="">
         </div>
-        <div class="right-col">
+        <div class="sec-col">
             <a id="likeButton" href="/gallery/like/<?= $pic['picture'][0]->id?>">
                 <input type="hidden" id="img-id" value="<?= $pic['picture'][0]->id?>">
                 <?php if (isset($pic['is_liked'][0]->isLiked) && $pic['is_liked'][0]->isLiked):?>
@@ -42,12 +42,16 @@
             <?php $imgDate = new DateTime($pic['picture'][0]->created_at);?>
             <h6>Posted by
                 <a href="/user/profile/<?=$pic['author'][0]->id;?>"><?=$pic['author'][0]->username;?></a>
-                on <?=date('l jS \of F Y h:i:s A', $imgDate->getTimestamp());?>
+                on <?=date('jS \of F Y H:i:s', $imgDate->getTimestamp());?>
             </h6>
-            <h1>Commentaires</h1>
-            <div id="comments">
+            <div id="comments" style="height: 250px; overflow: scroll; border: 1px solid black; padding: 4px; font-size: 14px;">
                 <?php foreach($pic['comments'] as $comment):?>
-                    <p><?=htmlspecialchars($comment->content);?></p>
+                    <p>
+                        <a class="comLink" href="/user/profile/<?=$comment->users_id->id;?>"><?=$comment->users_id->username;?></a>
+                        : <?=htmlspecialchars($comment->content);?>
+                    </p>
+                    <?php $comDate = new DateTime($comment->created_at);?>
+                    <h4><?=date('l jS \of F Y H:i:s', $comDate->getTimestamp());?></h4>
                 <?php endforeach;?>
             </div>
             <?php if (isset($_SESSION['loggedin'])):?>
@@ -61,4 +65,8 @@
         </div>
     </div>
     <div class="empty"></div>
+    <?php
+//        echo '<pre>';
+//        print_r($pic);
+    ?>
 </body>

@@ -8,19 +8,26 @@
     margin-top: 50px; }
 
 h1 {
-    font-size: 2.5em;
-    font-family: GothamMedium; }
+    text-align: center;
+}
 
-h4 {
-    font-size: 24px;
-    font-family: GothamThin;
-    border-bottom: 1px solid #000;
-    margin-bottom: 10px; }
+h2 {
+    text-align: left;
+    font-size: 2em;
+    font-family: GothamMedium;
+}
+
+/*h4 {*/
+    /*font-size: 24px;*/
+    /*font-family: GothamThin;*/
+    /*border-bottom: 1px solid #000;*/
+    /*margin-bottom: 10px; }*/
 
 h6 {
     border-bottom: 1px solid #000;
     padding-bottom: 0.5em;
-    margin-bottom: 1em; }
+    margin-bottom: 1em;
+}
 
 p {
     font-family: GothamLight;
@@ -28,42 +35,14 @@ p {
     margin-bottom: 1em; }
 
 .first-col {
-    width: 48%;
-    border-right: 1px solid black;
+    width: 58%;
+    /*border-right: 1px solid black;*/
     float: left;
-    margin-right: 1%;
-    padding-right: 1%; }
+}
 
 .sec-col {
-    width: 48%;
-    float: left; }
-
-.col-1, .col-2, .col-3 {
-    width: 32%;
-    display: inline-block;
-    vertical-align: top;
-    overflow: hidden; }
-.col-1 img, .col-2 img, .col-3 img {
-    padding: 3px;
-    width: 100%;
-    height: auto;
-    opacity: 1;
-    border: 1px solid #FFF;
-    transition: opacity 0.3s; }
-.col-1 img:hover, .col-2 img:hover, .col-3 img:hover {
-    opacity: 0.6;
-    border: 1px solid #000; }
-
-.images {
-    width: 100px; }
-
-.top {
-    margin: 0 auto; }
-
-.holder {
-    width: 960px;
-    margin: 0 auto;
-    margin-top: 20px;
+    width: 38%;
+    float: left;
 }
 
 .hexagon {
