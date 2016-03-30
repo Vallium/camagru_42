@@ -80,7 +80,6 @@ window.onload = function () {
 
     document.getElementById("formLoadMore").addEventListener("submit", function(){
         event.preventDefault();
-
         ajaxLoadMore();
     });
 };

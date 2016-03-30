@@ -49,7 +49,7 @@ class UserModel extends Model
     }
 
     /**
-     * @param \item\User $obj
+     * @param $obj \item\User
      */
     protected function update(\item\User $obj)
     {
@@ -72,19 +72,14 @@ class UserModel extends Model
         }
     }
 
-//    public function find($username) {
-//        $req = "SELECT * FROM $this->table WHERE username='$username'";
-//
-//        $this->dbConnexion();
-//        try {
-//            $user = $this->db->query($req)->fetch();
-//        } catch (\PDOException $e) {
-//            print 'Erreur !:'.$e->getMessage().'<br />';
-//        }
-//        if (isset($user))
-//            return ($user);
-//        return ('no user with this username');
-//    }
+    public function getById($user_id)
+    {
+        $req = array(
+            'where' => "id=$user_id",
+        );
+
+        return $this->get($req);
+    }
 
     public function getByUsername($username)
     {
@@ -95,10 +90,10 @@ class UserModel extends Model
         return $this->get($req);
     }
 
-    public function getById($user_id)
+    public function getByEmail($email)
     {
         $req = array(
-            'where' => "id=$user_id",
+            'where' => "email='$email'",
         );
 
         return $this->get($req);

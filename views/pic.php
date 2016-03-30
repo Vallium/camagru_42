@@ -59,7 +59,7 @@
                     <input id="inCom" type="text" name="content" placeholder="Post your comment...">
                     <input type="hidden" name="users_id" value="<?=$_SESSION['id'];?>">
                     <input type="hidden" name="images_id" value="<?=$pic['picture'][0]->id;?>">
-                    <button type="submit"> POST COMMENT </button>
+                    <button type="submit">POST COMMENT</button>
                 </form>
             <?php endif;?>
         </div>

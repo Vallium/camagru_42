@@ -18,6 +18,11 @@ class UploadController extends Controller
         $this->render('takePicture.php');
     }
 
+    public function uploadTest()
+    {
+        print_r($_FILES);
+    }
+
     private function mergeImages($imgId, $filterId)
     {
         //define the width and height of our images
@@ -75,6 +80,7 @@ class UploadController extends Controller
                 $postedId = $this->ImageModel->getLastInsertId();
 
                 imagepng(imagecreatefromstring(file_get_contents($_FILES['fileToUpload']['tmp_name'])), ROOT.'img/uploads/'.$postedId.'.png');
+
                 $this->mergeImages($postedId, $_POST['filterId']);
             }
 

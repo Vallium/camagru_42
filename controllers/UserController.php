@@ -111,41 +111,60 @@ class UserController extends Controller
             return;
         }
 
-        if (isset($_POST))
+        if (!empty($_POST))
         {
             $this->loadModel('UserModel');
 
             $errors = array();
 
-            if (empty($_POST['username']) || !is_string($_POST['username']) || strlen($_POST['username'] > 45))
+            if (empty($_POST['username']) || !is_string($_POST['username']) || strlen($_POST['username'] > 36) || !preg_match('`^([a-zA-Z0-9-_]{2,36})$`', $_POST['username']))
                 $errors['username'] = true;
 
             if (empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
                 $errors['email'] = true;
 
-            if (empty($_POST['password']) || $_POST['password'] != $_POST['passwordConf'] || strlen($_POST['password']) > 255 )
+            if (empty($_POST['password']) || strlen($_POST['password']) > 100 || !preg_match('`^([a-zA-Z0-9-_]{6,100})$`', $_POST['password']))
                 $errors['password'] = true;
+
+            if ($_POST['password'] != $_POST['passwordConf'])
+                $errors['password_match'] = true;
+
+            $loginExists = $this->UserModel->getByUsername($_POST['username']);
+
+            if (!empty($loginExists))
+               $errors['login_already_exists'] = true;
+
+            $emailExists = $this->UserModel->getByEmail($_POST['email']);
+
+            if (!empty($emailExists))
+                $errors['email_already_exists'] = true;
 
             if (empty($errors))
             {
-                $user = new User();
-                $security_hash = sha1($_POST['username'].rand());
-
-                $user->setUsername($_POST['username']);
-                $user->setEmail($_POST['email']);
-                $user->setPassword(sha1($_POST['password']));
-                $user->setSecurityHash($security_hash);
-                $this->UserModel->save($user);
-                if (!$this->UserModel->getDB()->lastInsertId())
-                    $errors['exist'] = true;
-
-                // send email with security hash
-                $this->sendConfirmationMail($this->UserModel->getDB()->lastInsertId(), $_POST['email'], $security_hash);
-
+//                $user = new User();
+//                $security_hash = sha1($_POST['username'].rand());
+//
+//                $user->setUsername($_POST['username']);
+//                $user->setEmail($_POST['email']);
+//                $user->setPassword(sha1($_POST['password']));
+//                $user->setSecurityHash($security_hash);
+//                $this->UserModel->save($user);
+//
+//                // send email with security hash
+//                $this->sendConfirmationMail($this->UserModel->getDB()->lastInsertId(), $_POST['email'], $security_hash);
+//
+                if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+                {
+                    echo json_encode(true);
+                    die();
+                }
                 header('Location: '.WEBROOT);
             }
-//            else
-//                print_r($errors);
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            {
+                echo json_encode($errors);
+                die();
+            }
         }
         $this->render('signup.php');
     }
@@ -159,7 +178,7 @@ class UserController extends Controller
             return;
         }
 
-        if (isset($_POST))
+        if (!empty($_POST))
         {
             $this->loadModel('UserModel');
 

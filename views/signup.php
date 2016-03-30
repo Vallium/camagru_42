@@ -2,11 +2,12 @@
     <link href="/css/signin.css" rel="stylesheet" type="text/css">
     <title>Camagru - Sign-up</title>
     <script src="/scripts/signup.js"></script>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
 </head>
 <body>
     <div class="holder">
         <h1>SIGN-UP</h1>
-        <form method="post" action="">
+        <form id="signUpForm" method="post" action="/user/signup">
             <div>
                 <label>USERNAME</label>
                 <input type="text" name="username" autofocus>
@@ -23,7 +24,9 @@
                 <label>CONFIRM PASSWORD</label>
                 <input type="password" name="passwordConf">
             </div>
-            <button class="button orange">SUBSCRIBE</button>
+            <div id="errors">
+            </div>
+            <button id="button" class="button orange">SIGN-UP</button>
         </form>
     </div>
 </body>

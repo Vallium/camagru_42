@@ -50,6 +50,26 @@
     color: #ff6800;
 }
 
+.filters {
+    width: 640px;
+    height: 100px;
+    border: 2px solid black;
+    padding: 2px;
+    margin: 0 auto;
+    margin-top: 5px;
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+
+.filters img {
+    height: 100%;
+    width: auto;
+    margin-left: 2px;
+    /*margin-right: 2px;*/
+    display: inline-block;
+    white-space: normal;
+    border: 2px solid transparent;
+}
 
 .button{
     position: relative;

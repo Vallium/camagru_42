@@ -30,7 +30,7 @@ function ajaxUpload(oFormElem)
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            //console.log(xhr.responseText);
+            // console.log(xhr.responseText);
             var json = JSON.parse(xhr.responseText);
 
             if (json == true)
@@ -59,35 +59,23 @@ window.onload = function(){
         e.preventDefault();
     },false);
 
-    //window.addEventListener("drop",function(e){
-    //    e = e || event;
-    //    e.preventDefault();
-    //},false);
-
     dropper.addEventListener('drop', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        //var files = e.dataTransfer.files,
-        //    filesLen = files.length,
-        //    filenames = "";
         var files = e.target.files || e.dataTransfer.files;
 
-        //for (var i = 0 ; i < filesLen ; i++) {
-            //filenames += '\n' + files[i].name;
-            for (var i = 0, file; file = files[i]; i++) {
-                if (file.type.indexOf("image") == 0) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-
-                        document.getElementById("image").src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
+        for (var i = 0, file; file = files[i]; i++) {
+            if (file.type.indexOf("image") == 0) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    console.log(e.target.result);
+                    document.getElementById("image").src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
         dropper.style.borderStyle = 'solid';
-        //document.getElementById('infoDragNDrop').style.display = 'none';
-        //alert(files.length + ' fichier(s) :\n' + filenames);
     });
 
     document.getElementById("file").onchange = function () {
@@ -108,4 +96,25 @@ window.onload = function(){
 
         ajaxUpload(this);
     });
+
+    for (var i = 1; i <= document.getElementById('nbrFilters').value; i++)
+    {
+        if (i == 1)
+            document.getElementById('filter-' + i).style.borderColor = '#ff6800';
+        document.getElementById('filter-' + i).addEventListener('click', function () {
+            console.log('Filter ' + this.alt);
+
+            document.getElementById('calque').style.backgroundImage = 'url(/img/filters/' + this.alt + '.png';
+            document.getElementById('filter-id').value = this.alt;
+            for (var i = 1; i <= document.getElementById('nbrFilters').value; i++)
+            {
+                var target = document.getElementById('filter-' + i);
+
+                if (target.alt == this.alt)
+                    target.style.borderColor = '#ff6800';
+                else
+                    target.style.borderColor = 'transparent';
+            }
+        });
+    }
 };
