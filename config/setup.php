@@ -3,7 +3,6 @@
 //    ini_set('display_errors', 'on');
 //    include('database.php');
 //
-//
 //    $schema = 'camagru';
 //
 //    try {
@@ -44,7 +43,7 @@
 //        require '../models/CommentModel.php';
 //        \model\CommentModel::createTable($pdo, $schema);
 //
-//        echo '<h1>Init Database OK!</h1>';
+//        echo '<h1>Database initialized with success!</h1>';
 //
 //    } catch (PDOException $e) {
 //        echo 'Connection failed: '.$e->getMessage();
