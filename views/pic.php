@@ -29,12 +29,12 @@
                     <span id="likeChar" class="fa like"></span>
                 <?php endif;?>
             </a>
-            <p id="likeNbr"><?=$pic['likes'][0]->count;?></p>
+            <p id="likeNbr"><?=number_format($pic['likes'][0]->count);?></p>
             <?php if (isset($_SESSION['loggedin']) && $pic['picture'][0]->users_id == $_SESSION['id']): ?>
                 <form id="formDelete" method="post" action="/upload/deleteImage">
                     <input type="hidden" name="imgId" value="<?=$pic['picture'][0]->id?>">
                     <input type="hidden" name="imgUserId" value="<?=$pic['picture'][0]->users_id?>">
-                    <button id="delButton" style="background-color: transparent">
+                    <button id="delButton">
                         <span id="delChar" class="fa cross"></span>
                     </button>
                 </form>
@@ -44,7 +44,7 @@
                 <a href="/user/profile/<?=$pic['author'][0]->id;?>"><?=$pic['author'][0]->username;?></a>
                 on <?=date('jS \of F Y H:i:s', $imgDate->getTimestamp());?>
             </h6>
-            <div id="comments" style="height: 250px; overflow: scroll; border: 1px solid black; padding: 4px; font-size: 14px;">
+            <div id="comments">
                 <?php foreach($pic['comments'] as $comment):?>
                     <p>
                         <a class="comLink" href="/user/profile/<?=$comment->users_id->id;?>"><?=$comment->users_id->username;?></a>

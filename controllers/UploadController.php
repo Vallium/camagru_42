@@ -92,6 +92,9 @@ class UploadController extends Controller
                     echo json_encode(true);
                 die();
             }
+            else
+                if (empty($errors))
+                    header('Location: '.WEBROOT.'pic/'.$postedId);
         }
         $this->render('home.php');
     }

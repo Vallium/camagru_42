@@ -10,14 +10,24 @@
             <nav class="secondary-nav">
                 <div class="content-holder">
                     <div class="left-side">
+                        <?php
+//                        function get_gravatar($email, $s = 80, $d = 'mm', $r = 'g') {
+//                            $url = 'http://www.gravatar.com/avatar/';
+//                            $url .= md5(strtolower(trim($email)));
+//                            $url .= "?s=$s&d=$d&r=$r";
+//
+//                            return $url;
+//                        }
+                        ?>
                         <?php if (isset($_SESSION['username'])):?>
-                            <?php if (file_exists(ROOT.'img'.DS.'users'.DS.$_SESSION['id'].'.png')): ?>
-                                <img src="/img/users/<?= $_SESSION['id']?>.png" alt="Pic">
-                            <?php elseif (file_exists(ROOT.'img'.DS.'users'.DS.$_SESSION['id'].'.jpg')): ?>
-                                <img src="/img/users/<?= $_SESSION['id']?>.jpg" alt="Pic">
-                            <?php else :?>
-                                <img src="/img/users/0.png" alt="Pic">
-                            <?php endif;?>
+<!--                            --><?php //if (file_exists(ROOT.'img'.DS.'users'.DS.$_SESSION['id'].'.png')): ?>
+<!--                                <img src="/img/users/--><?//= $_SESSION['id']?><!--.png" alt="Pic">-->
+<!--                            --><?php //elseif (file_exists(ROOT.'img'.DS.'users'.DS.$_SESSION['id'].'.jpg')): ?>
+<!--                                <img src="/img/users/--><?//= $_SESSION['id']?><!--.jpg" alt="Pic">-->
+<!--                            --><?php //else :?>
+<!--                                <img src="/img/users/0.png" alt="Pic">-->
+<!--                            --><?php //endif;?>
+                            <img src="<?=$_SESSION['gravatar'];?>" alt="Pic">
                             <a href="/user/profile/<?= $_SESSION['id']?>">PROFILE</a>
                             <a href="/upload">UPLOAD A FILE</a>
                             <a href="/upload/takePicture">TAKE A PICTURE</a>

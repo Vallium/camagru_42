@@ -73,12 +73,11 @@ class CommentModel extends Model
         return $this->get($req);
     }
 
-    public function getLastComments($imgId, $nb)
+    public function getLastComments($imgId)
     {
         $req = array(
             'where' => 'images_id='.$imgId,
-            'order' => 'created_at ASC',
-            'limit' => $nb
+            'order' => 'created_at ASC'
         );
 
         return $this->get($req);

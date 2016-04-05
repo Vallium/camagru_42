@@ -53,18 +53,20 @@ class UserModel extends Model
      */
     protected function update(\item\User $obj)
     {
-        $req = "UPDATE $this->table SET is_activated=:is_activated, security_hash=:security_hash WHERE id=:id";
+        $req = "UPDATE $this->table SET password=:password, is_activated=:is_activated, security_hash=:security_hash WHERE id=:id";
 
-        $a = $obj->getIsActivated();
-        $b = $obj->getSecurityHash();
-        $c = $obj->getId();
+        $a = $obj->getPassword();
+        $b = $obj->getIsActivated();
+        $c = $obj->getSecurityHash();
+        $d = $obj->getId();
 
         $this->dbConnexion();
         try {
             $up = $this->db->prepare($req);
-            $up->bindParam(':is_activated', $a, \PDO::PARAM_BOOL);
-            $up->bindParam(':security_hash', $b, \PDO::PARAM_STR);
-            $up->bindParam(':id', $c, \PDO::PARAM_INT);
+            $up->bindParam(':password', $a, \PDO::PARAM_STR);
+            $up->bindParam(':is_activated', $b, \PDO::PARAM_BOOL);
+            $up->bindParam(':security_hash', $c, \PDO::PARAM_STR);
+            $up->bindParam(':id', $d, \PDO::PARAM_INT);
             $up->execute();
             $this->dbKill();
         } catch (\PDOException $e) {

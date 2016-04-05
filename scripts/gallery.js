@@ -22,14 +22,6 @@ function getXMLHttpRequest() {
     return xhr;
 }
 
-function fileExists(url)
-{
-    var http = getXMLHttpRequest();
-    http.open('HEAD', url, false);
-    http.send();
-    return http.status != 404;
-}
-
 function ajaxLoadMore()
 {
     var xhr = getXMLHttpRequest();
@@ -38,19 +30,13 @@ function ajaxLoadMore()
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var json  = JSON.parse(xhr.responseText);
+
             if (json == false)
                 document.getElementById('formLoadMore').style.display = 'none';
             else
             {
                 for (var i = 0; i < json.length; i++)
-                {
-                    var ext;
-                    if (fileExists('/img/uploads/' + json[i].id + '.jpg'))
-                        ext = '.jpg';
-                    else if (fileExists('/img/uploads/' + json[i].id + '.png'))
-                        ext = '.png';
-                    wrap.innerHTML += '<a href="/gallery/pic/' + json[i].id + '"><img src="/img/uploads/' + json[i].id + ext + '" class="grayscale"></img></a>';
-                }
+                    wrap.innerHTML += '<a href="/gallery/pic/' + json[i].id + '"><img src="/img/uploads/' + json[i].id + json[i].ext + '" class="grayscale"></img></a>';
                 imgNb += 3;
             }
         }

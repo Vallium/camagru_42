@@ -10,47 +10,47 @@ use item\User;
 
 class UserController extends Controller
 {
-//    public function index()
-//    {
-//    }
-
-
     protected function sendConfirmationMail($id, $mail, $hash)
     {
-//        mail('anton.alliot@gmail.com', 'test mail', 'Salut ceci est un test');
-//        $mail = 'anton.alliot@gmail.com';
-
         if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail))
-        {
             $passage_ligne = "\r\n";
-        }
         else
-        {
             $passage_ligne = "\n";
-        }
 
-        $message_txt = "Salut à tous, voici un e-mail envoyé par un script PHP.";
-        $message_html = "<html><head></head><body style='background-color: rgba(50, 50, 50, 0.8); color: #ff6800;'>".'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$id.'/'.$hash."</body></html>";
+        $message_txt = 'Hello, welcome on Camagru. Please click the following link to activate your account:'.$passage_ligne.'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$id.'/'.$hash;
+
+        $message_html = "
+                <html>
+                    <head>
+                    </head>
+                    <body style='background-color: rgba(50, 50, 50, 0.8); color: #ff6800; width: 960px; height: auto; margin: 0 auto;'>
+                        <h1>Hello,</h1>
+                        <p>Welcome on Camagru from Vallium @ 42, please click the link below to active your account:</p>
+                        <div style='border: 1px solid black; width: 850px; height: auto; margin: 0 auto; padding: 5px;'>".'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$id.'/'.$hash."</div>
+                    </body>
+                </html>
+                ";
 
         $boundary = "-----=".md5(rand());
 
-        $sujet = "Hey mon ami !";
+        $sujet = "Camagru - Welcome! Active your account";
 
         $header = "From: \"www-data\" www-data@antoine.doussaud.org".$passage_ligne;
         $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$passage_ligne;
         $header.= "MIME-Version: 1.0".$passage_ligne;
         $header.= "Content-Type: multipart/alternative;".$passage_ligne." boundary=\"$boundary\"".$passage_ligne;
 
-        //=====Création du message.
+        //  Init mail.
         $message = $passage_ligne."--".$boundary.$passage_ligne;
-        //=====Ajout du message au format texte.
+
+        //  Add Text Format.
         $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$passage_ligne;
         $message.= "Content-Transfer-Encoding: 8bit".$passage_ligne;
         $message.= $passage_ligne.$message_txt.$passage_ligne;
-        //==========
 
         $message.= $passage_ligne."--".$boundary.$passage_ligne;
-        //=====Ajout du message au format HTML
+
+        //  Add HTML Format.
         $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$passage_ligne;
         $message.= "Content-Transfer-Encoding: 8bit".$passage_ligne;
         $message.= $passage_ligne.$message_html.$passage_ligne;
@@ -68,18 +68,16 @@ class UserController extends Controller
 
         $user = $this->UserModel->getById($id);
 
-//        echo '<pre>';
-//        print_r($user);
-//        die();
-
         if (empty($user))
             $errors['userNotFound'] = true;
-
-        if ($user[0]->is_activated == 1)
+        elseif ($user[0]->is_activated == 1)
             $errors['active'] = true;
 
         if (isset($_SESSION['loggedin']))
-            $errors['alreadyLogged'] = true;
+        {
+            header('Location: ' . WEBROOT);
+            return;
+        }
 
         if (empty($errors))
         {
@@ -87,19 +85,38 @@ class UserController extends Controller
                 $obj = new User();
 
                 $obj->setId($user[0]->id);
+                $obj->setPassword($user[0]->password);
                 $obj->setIsActivated(1);
                 $obj->setSecurityHash(null);
 
                 $this->UserModel->save($obj);
-                echo 'Account confirmed with success!';
+                $v['confirm']['ok'] = true;
             }
         }
-        header('Location: '.WEBROOT);
+        else
+            $v['confirm']['errors'] = $errors;
+        $this->set($v);
+        $this->render('signin.php');
+    }
+
+    public function forgotPassword()
+    {
+        if (isset($_SESSION['username']))
+        {
+            header('Location: '.WEBROOT);
+            return;
+        }
+
+        $this->render('forgotPassword.php');
     }
 
     public function retrievePassword($id, $hash)
     {
+    }
 
+    public function sendRetrieveRequest()
+    {
+        echo json_encode(true);
     }
 
     public function signup()
@@ -107,7 +124,6 @@ class UserController extends Controller
         if (isset($_SESSION['username']))
         {
             header('Location: '.WEBROOT);
-//            $this->render('home.php');
             return;
         }
 
@@ -141,32 +157,47 @@ class UserController extends Controller
 
             if (empty($errors))
             {
-//                $user = new User();
-//                $security_hash = sha1($_POST['username'].rand());
-//
-//                $user->setUsername($_POST['username']);
-//                $user->setEmail($_POST['email']);
-//                $user->setPassword(sha1($_POST['password']));
-//                $user->setSecurityHash($security_hash);
-//                $this->UserModel->save($user);
-//
-//                // send email with security hash
-//                $this->sendConfirmationMail($this->UserModel->getDB()->lastInsertId(), $_POST['email'], $security_hash);
-//
-                if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
-                {
-                    echo json_encode(true);
-                    die();
-                }
-                header('Location: '.WEBROOT);
+                $user = new User();
+                $security_hash = sha1($_POST['username'].rand());
+
+                $user->setUsername($_POST['username']);
+                $user->setEmail($_POST['email']);
+                $user->setPassword(sha1($_POST['password']));
+                $user->setSecurityHash($security_hash);
+                $this->UserModel->save($user);
+
+                // send email with security hash
+                $this->sendConfirmationMail($this->UserModel->getDB()->lastInsertId(), $_POST['email'], $security_hash);
             }
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
             {
-                echo json_encode($errors);
+                if (empty($errors))
+                    echo json_encode(true);
+                else
+                    echo json_encode($errors);
                 die();
+            }
+            else
+            {
+                // TODO: treate no javascript case for signin!
+                if (empty($errors))
+                    header('Location: '.WEBROOT);
+                else
+                {
+                    $v['errors'] = $errors;
+                    $this->set($v);
+                }
             }
         }
         $this->render('signup.php');
+    }
+    
+    private function get_gravatar($email, $s = 80, $d = 'mm', $r = 'g') {
+        $url = 'http://www.gravatar.com/avatar/';
+        $url .= md5(strtolower(trim($email)));
+        $url .= "?s=$s&d=$d&r=$r";
+
+        return $url;
     }
 
     public function signin()
@@ -174,7 +205,6 @@ class UserController extends Controller
         if (isset($_SESSION['username']) && $_SESSION['loggedin'] == true)
         {
             header('Location: '.WEBROOT);
-//            $this->render('home.php');
             return;
         }
 
@@ -184,35 +214,62 @@ class UserController extends Controller
 
             $errors = array();
 
-            if (empty($_POST['username']) || !is_string($_POST['username']) || strlen($_POST['username'] > 45))
+            if (empty($_POST['username']) || !is_string($_POST['username']) || strlen($_POST['username'] > 36) || !preg_match('`^([a-zA-Z0-9-_]{2,36})$`', $_POST['username']))
                 $errors['username'] = true;
-            if (empty($_POST['password']) || strlen($_POST['password']) > 255 )
+
+            if (empty($_POST['password']) || strlen($_POST['password']) > 100 || !preg_match('`^([a-zA-Z0-9-_]{6,100})$`', $_POST['password']))
                 $errors['password'] = true;
 
-            if (empty($errors))
-            {
-                $user = $this->UserModel->getByUsername($_POST['username']);
-                if ($user) {
-//                    echo '<pre>';
-//                    print_r($user);
-//                    die();
-                    if ($user[0]->is_activated)
-                    {
-                        if (sha1($_POST['password']) == $user[0]->password) {
-                            //                        session_start();
-                            $_SESSION['loggedin'] = true;
-                            $_SESSION['id'] = $user[0]->id;
-                            $_SESSION['username'] = $user[0]->username;
+            $user = $this->UserModel->getByUsername($_POST['username']);
 
-                            header('Location: ' . WEBROOT);
-                        } else
-                            echo 'bad pass';
+            if (empty($user))
+                $errors['user_not_found'] = true;
+            else
+            {
+                if (sha1($_POST['password']) == $user[0]->password) {
+                    if ($user[0]->is_activated == true)
+                    {
+                        if ($user[0]->security_hash != null)
+                        {
+                            $obj = new User();
+
+                            $obj->setId($user[0]->id);
+                            $obj->setPassword($user[0]->password);
+                            $obj->setIsActivated($user[0]->is_activated);
+                            $obj->setSecurityHash(null);
+
+                            $this->UserModel->save($obj);
+                        }
+                        $_SESSION['loggedin'] = true;
+                        $_SESSION['id'] = $user[0]->id;
+                        $_SESSION['username'] = $user[0]->username;
+                        $_SESSION['gravatar'] = $this->get_gravatar($user[0]->email, 360);
                     }
                     else
-                        echo 'user not activate';
+                        $errors['user_not_activated'] = true;
                 }
                 else
-                    echo 'no exist';
+                    $errors['bad_pass'] = true;
+            }
+
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            {
+                if (!empty($errors))
+                    echo json_encode($errors);
+                else
+                    echo json_encode(true);
+                die();
+            }
+            else
+            {
+                // TODO: treate no javascript case for signin!
+                if (!empty($errors))
+                {
+                    $v['errors'] = $errors;
+                    $this->set($v);
+                }
+                else
+                    header('Location: '.WEBROOT);
             }
         }
         $this->render('signin.php');
@@ -221,17 +278,26 @@ class UserController extends Controller
     public function logout() {
         session_unset();
         session_destroy();
-//        $this->render('home.php');
-//        TODO : change url in header calling
-        header('Location: '.WEBROOT);
 
+        header('Location: '.WEBROOT);
     }
 
     public function profile($user_id) {
         $this->loadModel('UserModel');
+        $this->loadModel('ImageModel');
 
         $v['profile'] = array(
-            'user' => $this->UserModel->getById($user_id));
+            'user' => $this->UserModel->getById($user_id),
+            'pictures' => $this->ImageModel->getLastByUserId($user_id)
+        );
+
+        foreach($v['profile']['pictures'] as $pic)
+        {
+            if (file_exists(ROOT.'img/uploads/'.$pic->id.'.jpg'))
+                $pic->ext = '.jpg';
+            elseif (file_exists(ROOT.'img/uploads/'.$pic->id.'.png'))
+                $pic->ext = '.png';
+        }
         $this->set($v);
 
         $this->render('profile.php');

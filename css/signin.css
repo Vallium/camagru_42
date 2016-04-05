@@ -38,7 +38,7 @@
 }
 
 .holder form .toSubscribe {
-    margin-top: 2em;
+    margin-top: 40px;
     text-align: center;
 }
 
@@ -50,6 +50,22 @@
     color: #ff6800;
 }
 
+.confirm-div {
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.confirm-div.error {
+    width: 500px;
+    color: red;
+    border: 1px solid red;
+}
+
+.confirm-div.ok {
+    width: 520px;
+    color: green;
+    border: 1px solid green;
+}
 
 #errors {
     color: rgba(255, 0, 0, 0.7);

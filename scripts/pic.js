@@ -39,8 +39,8 @@ function ajaxPostCom(oFormElem)
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200)
         {
+            console.log(xhr.responseText);
             var json = JSON.parse(xhr.responseText);
-
             if (json['status'] == true)
             {
                 document.getElementById('comments').innerHTML += '<p><a class="comLink" href="/user/profile/' + json['authorId'] + '">' + json['author'] + '</a>: ' + escapeHtml(document.getElementById('inCom').value) + '</p>';

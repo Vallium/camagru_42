@@ -74,6 +74,16 @@ class ImageModel extends Model
         return $this->get($req);
     }
 
+    public function getLastByUserId($user_id)
+    {
+        $req = array(
+            'where' => 'users_id='.$user_id,
+            'order' => 'created_at DESC'
+        );
+
+        return $this->get($req);
+    }
+
     public function deleteImage($id)
     {
         $this->delete($id);

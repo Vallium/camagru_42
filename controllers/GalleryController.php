@@ -28,7 +28,16 @@ class GalleryController extends Controller
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         {
             if (!empty($images))
+            {
+                foreach ($images as $img)
+                {
+                    if (file_exists(ROOT.'img/uploads/'.$img->id.'.jpg'))
+                        $img->ext = '.jpg';
+                    elseif (file_exists(ROOT.'img/uploads/'.$img->id.'.png'))
+                        $img->ext = '.png';
+                }
                 echo json_encode($images);
+            }
             else
                 echo json_encode(false);
             die();
@@ -65,7 +74,7 @@ class GalleryController extends Controller
 
         $v['pic'] = array(
             'picture' => $this->ImageModel->getImageById($id),
-            'comments' => $this->CommentModel->getLastComments($id, 200),
+            'comments' => $this->CommentModel->getLastComments($id),
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
 //        echo '<pre>';
@@ -83,6 +92,55 @@ class GalleryController extends Controller
 
         $this->set($v);
         $this->render('pic.php');
+    }
+
+    protected function sendCommentMail($mail, $content)
+    {
+        if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail))
+            $endl = "\r\n";
+        else
+            $endl = "\n";
+
+        $message_txt = "Hello, someone posted a comment on one of your pictures:".$endl.$content;
+
+        $message_html = "
+                <html>
+                    <head>
+                    </head>
+                    <body style='background-color: rgba(50, 50, 50, 0.8); color: #ff6800; width: 960px; height: auto; margin: 0 auto;'>
+                        <h1>Hello, someone posted a comment on one of your pictures:</h1>
+                        <div style='border: 1px solid black; width: 850px; height: auto; margin: 0 auto; padding: 5px;'>".$content."</div>
+                    </body>
+                </html>
+                ";
+
+        $boundary = "-----=".md5(rand());
+
+        $subject = "Camagru - Someone posted a comment!";
+
+        $header = "From: \"www-data\" www-data@antoine.doussaud.org".$endl;
+        $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$endl;
+        $header.= "MIME-Version: 1.0".$endl;
+        $header.= "Content-Type: multipart/alternative;".$endl." boundary=\"$boundary\"".$endl;
+
+        //=====Création du message.
+        $message = $endl."--".$boundary.$endl;
+        //=====Ajout du message au format texte.
+        $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$endl;
+        $message.= "Content-Transfer-Encoding: 8bit".$endl;
+        $message.= $endl.$message_txt.$endl;
+        //==========
+
+        $message.= $endl."--".$boundary.$endl;
+        //=====Ajout du message au format HTML
+        $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$endl;
+        $message.= "Content-Transfer-Encoding: 8bit".$endl;
+        $message.= $endl.$message_html.$endl;
+
+        $message.= $endl."--".$boundary."--".$endl;
+        $message.= $endl."--".$boundary."--".$endl;
+
+        mail($mail, $subject, $message, $header);
     }
 
     public function postComment()
@@ -117,6 +175,13 @@ class GalleryController extends Controller
                     $json['author'] = $author[0]->username;
                     $json['authorId'] = $comment[0]->users_id;
                     $json['status'] = true;
+
+                    $this->loadModel('ImageModel');
+                    $img = $this->ImageModel->getImageById($_POST['images_id']);
+
+                    $imgAuthor = $this->UserModel->getById($img[0]->users_id);
+//                    $json['mailtest'] = $imgAuthor[0]->email;
+                    $this->sendCommentMail($imgAuthor[0]->email, $comment[0]->content);
                 }
                 else
                     $json = false;
