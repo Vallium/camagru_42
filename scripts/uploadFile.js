@@ -44,39 +44,39 @@ function ajaxUpload(oFormElem)
 }
 
 window.onload = function(){
-    var dropper = document.querySelector('#preview');
-
-    dropper.addEventListener('dragenter', function() {
-        dropper.style.borderStyle = 'dashed';
-    });
-
-    dropper.addEventListener('dragleave', function() {
-        dropper.style.borderStyle = 'solid';
-    });
-
-    window.addEventListener("dragover",function(e){
-        e = e || event;
-        e.preventDefault();
-    },false);
-
-    dropper.addEventListener('drop', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        var files = e.target.files || e.dataTransfer.files;
-
-        for (var i = 0, file; file = files[i]; i++) {
-            if (file.type.indexOf("image") == 0) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    console.log(e.target.result);
-                    document.getElementById("image").src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        dropper.style.borderStyle = 'solid';
-    });
+    // var dropper = document.querySelector('#preview');
+    //
+    // dropper.addEventListener('dragenter', function() {
+    //     dropper.style.borderStyle = 'dashed';
+    // });
+    //
+    // dropper.addEventListener('dragleave', function() {
+    //     dropper.style.borderStyle = 'solid';
+    // });
+    //
+    // window.addEventListener("dragover",function(e){
+    //     e = e || event;
+    //     e.preventDefault();
+    // },false);
+    //
+    // dropper.addEventListener('drop', function(e) {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //
+    //     var files = e.target.files || e.dataTransfer.files;
+    //
+    //     for (var i = 0, file; file = files[i]; i++) {
+    //         if (file.type.indexOf("image") == 0) {
+    //             var reader = new FileReader();
+    //             reader.onload = function(e) {
+    //                 console.log(e.target.result);
+    //                 document.getElementById("image").src = e.target.result;
+    //             };
+    //             reader.readAsDataURL(file);
+    //         }
+    //     }
+    //     dropper.style.borderStyle = 'solid';
+    // });
 
     document.getElementById("file").onchange = function () {
         var reader = new FileReader();
@@ -97,16 +97,17 @@ window.onload = function(){
         ajaxUpload(this);
     });
 
-    for (var i = 1; i <= document.getElementById('nbrFilters').value; i++)
+    for (var i = 0; i <= document.getElementById('nbrFilters').value; i++)
     {
-        if (i == 1)
+        if (i == 0)
             document.getElementById('filter-' + i).style.borderColor = '#ff6800';
+
         document.getElementById('filter-' + i).addEventListener('click', function () {
-            console.log('Filter ' + this.alt);
+            // console.log('Filter ' + this.alt);
 
             document.getElementById('calque').style.backgroundImage = 'url(/img/filters/' + this.alt + '.png';
             document.getElementById('filter-id').value = this.alt;
-            for (var i = 1; i <= document.getElementById('nbrFilters').value; i++)
+            for (var i = 0; i <= document.getElementById('nbrFilters').value; i++)
             {
                 var target = document.getElementById('filter-' + i);
 

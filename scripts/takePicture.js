@@ -111,17 +111,17 @@ window.onload = function () {
         ajaxPostImgFromWebcam(this);
     });
 
-    for (var i = 1; i <= document.getElementById('nbrFilters').value; i++)
+    for (var i = 0; i <= document.getElementById('nbrFilters').value; i++)
     {
-        if (i == 1)
+        if (i == 0)
             document.getElementById('filter-' + i).style.borderColor = '#ff6800';
         
         document.getElementById('filter-' + i).addEventListener('click', function () {
-            console.log('Filter ' + this.alt);
+            // console.log('Filter ' + this.alt);
 
             document.getElementById('calque').style.backgroundImage = 'url(/img/filters/' + this.alt + '.png';
             document.getElementById('filter-id').value = this.alt;
-            for (var i = 1; i <= document.getElementById('nbrFilters').value; i++)
+            for (var i = 0; i <= document.getElementById('nbrFilters').value; i++)
             {
                 var target = document.getElementById('filter-' + i);
 
