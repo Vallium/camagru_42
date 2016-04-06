@@ -191,7 +191,7 @@ class UserController extends Controller
         }
         $this->render('signup.php');
     }
-    
+
     private function get_gravatar($email, $s = 80, $d = 'mm', $r = 'g') {
         $url = 'http://www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
