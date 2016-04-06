@@ -36,7 +36,7 @@ function ajaxLoadMore()
             else
             {
                 for (var i = 0; i < json.length; i++)
-                    wrap.innerHTML += '<a href="/gallery/pic/' + json[i].id + '"><img src="/img/uploads/' + json[i].id + json[i].ext + '" class="grayscale"></img></a>';
+                    wrap.innerHTML += '<a href="/gallery/pic/' + json[i].id + '"><img src="/img/uploads/' + json[i].id + json[i].ext + '" class="grayscale" /></a>';
                 imgNb += 3;
             }
         }
@@ -47,7 +47,6 @@ function ajaxLoadMore()
 
 function yHandler()
 {
-
     var wrap = document.getElementById('wrap');
     var contentHeight = wrap.offsetHeight;
     var yOffset = window.pageYOffset;

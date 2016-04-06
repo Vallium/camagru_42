@@ -7,11 +7,14 @@
 
 </head>
 <body>
-    <?php //print_r($gallery);?>
+    <?php
+//    echo $GLOBALS['nb_img_on_gallery_load'].PHP_EOL;
+//    echo '<pre>';
+//    print_r($gallery);
+    ?>
     <div class="holder">
         <h1>GALLERY</h1>
-<!--        <a href="/user/sendConfirmationMail" class="button orange">TEST EMAIL</a>-->
-        <input id="nb_img_on_gallery_load" type="hidden" value="<?=$GLOBALS['nb_img_on_gallery_load']?>">
+        <input id="nb_img_on_gallery_load" type="hidden" value="<?=$GLOBALS['nb_img_on_gallery_load'];?>">
         <div id="wrap">
             <?php foreach($gallery['images'] as $img):?>
                 <?php
@@ -20,10 +23,10 @@
                 elseif (file_exists(ROOT.'img'.DS.'uploads'.DS.$img->id.'.png'))
                     $ext = 'png';
                 ?>
-                <a href="/gallery/pic/<?=$img->id;?>"><img src="/img/uploads/<?=$img->id;?>.<?=$ext?>" class="grayscale"></a>
+                <a href="/gallery/pic/<?=$img->id;?>"><img src="/img/uploads/<?=$img->id;?>.<?=$ext?>" class="grayscale" /></a>
             <?php endforeach;?>
         </div>
-        <form id="formLoadMore" action="/gallery/loadMore/0/<?=$GLOBALS['nb_img_on_gallery_load'] + 3?>">
+        <form id="formLoadMore" method="post" action="/gallery/loadMore/0/<?=$GLOBALS['nb_img_on_gallery_load'] + 6;?>">
             <button class="button orange">LOAD MORE</button>
         </form>
     </div>

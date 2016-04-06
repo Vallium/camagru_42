@@ -79,7 +79,7 @@ function ajaxLike()
                 document.getElementById('likeNbr').innerHTML = parseInt(document.getElementById('likeNbr').innerHTML) - 1;
                 likeButton.className = "fa like";
             }
-            else if (json == "noUserConnected")
+            else if (json['not_connected'] == true)
                 alert('You must be connected to like a photo');
         }
     };
@@ -115,12 +115,12 @@ window.onload = function() {
     var comDiv = document.getElementById("comments");
     comDiv.scrollTop = comDiv.scrollHeight;
 
-    if (document.getElementById("formComment"))
-        document.getElementById("formComment").addEventListener("submit", function(){
-            event.preventDefault();
-
-            ajaxPostCom(this);
-        });
+    // if (document.getElementById("formComment"))
+    //     document.getElementById("formComment").addEventListener("submit", function(){
+    //         event.preventDefault();
+    //
+    //         ajaxPostCom(this);
+    //     });
 
     if (document.getElementById("formDelete"))
         document.getElementById("formDelete").addEventListener("submit", function(){
@@ -130,13 +130,13 @@ window.onload = function() {
                 ajaxDelImg(this);
         });
 
-    document.getElementById("likeButton").addEventListener("click", function(){
-        event.preventDefault();
-        //if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-        //    alert('detect mobile');
-        //}
-        ajaxLike();
-    });
+    // document.getElementById("likeButton").addEventListener("click", function(){
+    //     event.preventDefault();
+    //     //if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    //     //    alert('detect mobile');
+    //     //}
+    //     ajaxLike();
+    // });
 
     document.getElementById('dblClickOnImg').addEventListener('dblclick', function() {
         event.preventDefault();

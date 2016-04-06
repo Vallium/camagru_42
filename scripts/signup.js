@@ -63,7 +63,6 @@ function ajaxSignUp(oFormElem) {
 window.onload = function () {
     document.getElementById('signUpForm').addEventListener("submit", function () {
         event.preventDefault();
-
         ajaxSignUp(this);
     });
 };

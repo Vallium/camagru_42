@@ -1,6 +1,6 @@
 <head>
     <link href="/css/profile.css" rel="stylesheet" type="text/css">
-    <title>Camagru - Profile</title>
+    <title>Camagru - <?=$profile['user'][0]->username?></title>
 </head>
 <body>
     <div class="holder">
@@ -18,14 +18,7 @@
             <div class="picture">
                 <div class="hexagon hexagon2">
                     <div class="hexagon-in1">
-                        <div id="hexagon-in2">
-<!--                            --><?php //if (file_exists(ROOT.'img'.DS.'users'.DS.$profile['user'][0]->id.'.png')): ?>
-<!--                                <img id="hexaImg" src="/img/users/--><?//= $profile['user'][0]->id?><!--.png" alt="Pic" style="display: none;">-->
-<!--                            --><?php //elseif (file_exists(ROOT.'img'.DS.'users'.DS.$profile['user'][0]->id.'.jpg')): ?>
-<!--                                <img id="hexaImg" src="/img/users/--><?//= $profile['user'][0]->id?><!--.jpg" alt="Pic" style="display: none;">-->
-<!--                            --><?php //else :?>
-<!--                                <img id="hexaImg" src="/img/users/0.png" alt="Pic" style="display: none;">-->
-<!--                            --><?php //endif;?>
+                        <div id="hexagon-in2" style="background-image: url(<?=get_gravatar($profile['user'][0]->email, 360);?>);">
                             <img id="hexaImg" src="<?=get_gravatar($profile['user'][0]->email, 360);?>" alt="Pic" style="display: none;">
                         </div>
                     </div>
@@ -35,7 +28,6 @@
                 <h2><?= strtoupper($profile['user'][0]->username)?></h2>
                 <?php $date = new DateTime($profile['user'][0]->created_at); ?>
                 <h6>Member since <?= date('l jS \of F Y', $date->getTimestamp());?></h6>
-<!--                <span class="fa pencil"></span>-->
             </div>
             <div class="clear"></div>
         </div>
@@ -55,8 +47,8 @@
     </div>
     <div class="empty"></div>
     <?php
-    echo '<pre>';
-    print_r($profile);
+//    echo '<pre>';
+//    print_r($profile);
     ?>
 </body>
 <script src="/scripts/profile.js"></script>

@@ -24,6 +24,7 @@ class GalleryController extends Controller
     {
         $GLOBALS['nb_img_on_gallery_load'] = $nb_to_load;
         $this->loadModel('ImageModel');
+
         $images = $this->ImageModel->loadMore($actual_nb_image, $nb_to_load);
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         {
@@ -65,8 +66,11 @@ class GalleryController extends Controller
             echo 'Error';
     }
 
-    public function pic($id)
+    public function pic($id = null, $errors = null)
     {
+        if ($id == null)
+            header('Location: '.WEBROOT);
+
         $this->loadModel('ImageModel');
         $this->loadModel('CommentModel');
         $this->loadModel('LikeModel');
@@ -77,12 +81,8 @@ class GalleryController extends Controller
             'comments' => $this->CommentModel->getLastComments($id),
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
-//        echo '<pre>';
-//        print_r($v['pic']['picture'][0]->users_id);
-//        die;
 
         $v['pic']['author'] = $this->UserModel->getById($v['pic']['picture'][0]->users_id);
-
 
         foreach ($v['pic']['comments'] as $com)
             $com->users_id = $this->UserModel->getById($com->users_id)[0];
@@ -90,6 +90,8 @@ class GalleryController extends Controller
         if (isset($_SESSION['loggedin']))
             $v['pic']['is_liked'] = $this->LikeModel->isLiked($id, $_SESSION['id']);
 
+        if (!empty($errors))
+            $v['pic']['errors'] = $errors;
         $this->set($v);
         $this->render('pic.php');
     }
@@ -145,62 +147,80 @@ class GalleryController extends Controller
 
     public function postComment()
     {
-        if (isset($_SESSION['loggedin']))
+        if (!isset($_SESSION['username']))
         {
-            if (isset($_POST)) {
-                $this->loadModel('CommentModel');
+            header('Location: '.WEBROOT);
+            return;
+        }
 
-                $errors = array();
+        if (!empty($_POST)) {
+            $this->loadModel('CommentModel');
 
-                if (empty($_POST['content']) || !is_string($_POST['content']))
-                    $errors['content'] = true;
+            if (empty($_POST['content']) || !is_string($_POST['content']))
+                $errors['content'] = true;
 
-                if (empty($errors)) {
-                    $comment = new Comment();
+            if (empty($errors)) {
+                $comment = new Comment();
 
-                    $comment->setContent($_POST['content']);
-                    $comment->setImagesId($_POST['images_id']);
-                    $comment->setUsersId($_POST['users_id']);
-                    $this->CommentModel->save($comment);
+                $comment->setContent($_POST['content']);
+                $comment->setImagesId($_POST['images_id']);
+                $comment->setUsersId($_POST['users_id']);
+                $this->CommentModel->save($comment);
 
-                    $comment = $this->CommentModel->getById($this->CommentModel->getDB()->lastInsertId());
+                $comment = $this->CommentModel->getById($this->CommentModel->getDB()->lastInsertId());
 
-                    $date = new \DateTime($comment[0]->created_at);
-                    $json['date'] = date('l jS \of F Y H:i:s', $date->getTimestamp());
-                    $date = null;
+                $date = new \DateTime($comment[0]->created_at);
+                $json['date'] = date('l jS \of F Y H:i:s', $date->getTimestamp());
+                $date = null;
 
-                    $this->loadModel('UserModel');
+                $this->loadModel('UserModel');
 
-                    $author = $this->UserModel->getById($comment[0]->users_id);
-                    $json['author'] = $author[0]->username;
-                    $json['authorId'] = $comment[0]->users_id;
-                    $json['status'] = true;
+                $author = $this->UserModel->getById($comment[0]->users_id);
+                $json['author'] = $author[0]->username;
+                $json['authorId'] = $comment[0]->users_id;
+                $json['status'] = true;
 
-                    $this->loadModel('ImageModel');
-                    $img = $this->ImageModel->getImageById($_POST['images_id']);
+                $this->loadModel('ImageModel');
+                $img = $this->ImageModel->getImageById($_POST['images_id']);
 
-                    $imgAuthor = $this->UserModel->getById($img[0]->users_id);
-//                    $json['mailtest'] = $imgAuthor[0]->email;
-                    $this->sendCommentMail($imgAuthor[0]->email, $comment[0]->content);
-                }
-                else
-                    $json = false;
+                $imgAuthor = $this->UserModel->getById($img[0]->users_id);
+
+                $this->sendCommentMail($imgAuthor[0]->email, $comment[0]->content);
             }
         }
-        else
-            $json = "noUserConnected";
 
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         {
-            echo json_encode($json);
-            die();
+            if (!empty($json))
+                echo json_encode($json);
+            elseif (!empty($errors))
+                echo json_encode($errors);
         }
-        $this->pic($_POST['images_id']);
+        else
+        {
+            if (!empty($json))
+                header('Location: '.WEBROOT.'gallery/pic/'.$_POST['images_id']);
+            elseif (!empty($errors))
+            {
+                $this->pic($_POST['images_id'], $errors);
+            }
+            else
+                header('Location: '.WEBROOT);
+        }
     }
 
-    public function like($image_id)
+    public function like($image_id = null)
     {
-        if (isset($_SESSION['loggedin']))
+        if ($image_id == null)
+        {
+            header('Location: '.WEBROOT);
+            return;
+        }
+
+        if (!isset($_SESSION['username']))
+            $errors['not_connected'] = true;
+
+        if (empty($errors))
         {
             $this->loadModel('LikeModel');
             if ($this->LikeModel->isLiked($image_id, $_SESSION['id'])[0]->isLiked)
@@ -218,12 +238,13 @@ class GalleryController extends Controller
                 $json = true;
             }
         }
-        else
-            $json = "noUserConnected";
 
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         {
-            echo json_encode($json);
+            if (empty($errors))
+                echo json_encode($json);
+            else
+                echo json_encode($errors);
             die();
         }
         $this->pic($image_id);

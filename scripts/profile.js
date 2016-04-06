@@ -3,11 +3,11 @@
  */
 
 
-window.onload = function (){
-    if (document.getElementById("hexagon-in2"))
-    {
-        var path = document.getElementById("hexaImg").src;
-
-        document.getElementById("hexagon-in2").style.backgroundImage = "url(" + path + ")";
-    }
-};
+// window.onload = function (){
+//     if (document.getElementById("hexagon-in2"))
+//     {
+//         var path = document.getElementById("hexaImg").src;
+//
+//         document.getElementById("hexagon-in2").style.backgroundImage = "url(" + path + ")";
+//     }
+// };

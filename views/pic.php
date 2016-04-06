@@ -3,13 +3,16 @@
     <title>Camagru - Picture</title>
     <script src="/scripts/pic.js"></script>
     <link href="/css/pic.css" rel="stylesheet" type="text/css">
+    <?php if (!empty($pic['errors'])): ?>
+        <style>
+            #formComment {
+                border: 2px solid rgba(255, 0, 0, 0.7);
+            }
+        </style>
+    <?php endif;?>
 </head>
 
 <body>
-    <?php
-//    echo '<pre>';
-//    print_r($pic);
-    ?>
     <div class="holder" id="holder">
         <div class="first-col">
             <?php

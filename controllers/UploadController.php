@@ -18,40 +18,25 @@ class UploadController extends Controller
         $this->render('takePicture.php');
     }
 
-    public function uploadTest()
-    {
-        print_r($_FILES);
-    }
-
     private function mergeImages($imgId, $filterId)
     {
-        //define the width and height of our images
         define("WIDTH", 640);
         define("HEIGHT", 480);
 
         $dest_image = imagecreatetruecolor(WIDTH, HEIGHT);
 
-        //make sure the transparency information is saved
         imagesavealpha($dest_image, true);
 
-        //create a fully transparent background (127 means fully transparent)
-        $trans_background = imagecolorallocatealpha($dest_image, 0, 0, 0, 127);
+        imagefill($dest_image, 0, 0, imagecolorallocatealpha($dest_image, 0, 0, 0, 127));
 
-        //fill the image with a transparent background
-        imagefill($dest_image, 0, 0, $trans_background);
-
-        //take create image resources out of the 3 pngs we want to merge into destination image
         $a = imagecreatefrompng(ROOT.'img/uploads/'.$imgId.'.png');
         $b = imagecreatefrompng(ROOT.'img/filters/'.$filterId.'.png');
 
-        //copy each png file on top of the destination (result) png
         imagecopy($dest_image, $a, 0, 0, 0, 0, WIDTH, HEIGHT);
         imagecopy($dest_image, $b, 0, 0, 0, 0, WIDTH, HEIGHT);
 
-        //send the appropriate headers and output the image in the browser
         imagepng($dest_image, ROOT.'img/uploads/'.$imgId.'.png');
 
-        //destroy all the image resources to free up memory
         imagedestroy($a);
         imagedestroy($b);
         imagedestroy($dest_image);
@@ -59,7 +44,7 @@ class UploadController extends Controller
 
     public function uploadImage()
     {
-        if (isset($_POST) && isset($_SESSION['loggedin']))
+        if (!empty($_POST) && isset($_SESSION['loggedin']))
         {
             $errors = array();
             $this->loadModel('ImageModel');
@@ -79,6 +64,8 @@ class UploadController extends Controller
                 $this->ImageModel->save($img);
                 $postedId = $this->ImageModel->getLastInsertId();
 
+                $json['last_insert_id'] = $postedId;
+
                 imagepng(imagecreatefromstring(file_get_contents($_FILES['fileToUpload']['tmp_name'])), ROOT.'img/uploads/'.$postedId.'.png');
 
                 $this->mergeImages($postedId, $_POST['filterId']);
@@ -89,21 +76,34 @@ class UploadController extends Controller
                 if (!empty($errors))
                     echo json_encode($errors);
                 else
-                    echo json_encode(true);
+                {
+                    $json['state'] = true;
+                    echo json_encode($json);
+                }
                 die();
             }
             else
+            {
                 if (empty($errors))
                     header('Location: '.WEBROOT.'pic/'.$postedId);
+                else
+                {
+                    $v['errors'] = $errors;
+                    $this->set($v);
+                    $this->render('uploadFile.php');
+                }
+
+            }
         }
-        $this->render('home.php');
+        else
+            header('Location: '.WEBROOT);
     }
 
     public function uploadImageFromWebcam()
     {
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         {
-            if (isset($_POST) && isset($_SESSION['loggedin'])) {
+            if (!empty($_POST) && isset($_SESSION['loggedin'])) {
                 $errors = array();
                 $this->loadModel('ImageModel');
 
@@ -134,10 +134,11 @@ class UploadController extends Controller
                     echo json_encode(true);
                 die();
             }
+            else
+                header('Location: '.WEBROOT);
         }
         else
             $this->render('404.php');
-//        $this->render('home.php');
     }
 
     public function deleteImage()

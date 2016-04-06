@@ -22,21 +22,6 @@ function getXMLHttpRequest() {
     return xhr;
 }
 
-function ajaxSendRetrieveRequest() {
-    var xhr = getXMLHttpRequest();
-    xhr.open("POST", "/user/sendRetrieveRequest", true);
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var json = JSON.parse(xhr.responseText);
-            console.log(json);
-        }
-    };
-    //
-    xhr.send();
-}
-
 function ajaxSignIn(oFormElem) {
     var xhr = getXMLHttpRequest();
     xhr.open("POST", "/user/signin", true);
@@ -82,9 +67,4 @@ window.onload = function () {
         event.preventDefault();
         ajaxSignIn(this);
     });
-
-    //document.getElementById('retrieve').addEventListener("click", function() {
-    //   event.preventDefault();
-    //    ajaxSendRetrieveRequest();
-    //});
 };

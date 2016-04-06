@@ -18,8 +18,8 @@ class HomeController extends Controller
         $this->render('home.php');
     }
 
-    public function getLastImages()
-    {
-        $this->loadModel('ImageModel');
-    }
+//    public function getLastImages()
+//    {
+//        $this->loadModel('ImageModel');
+//    }
 }

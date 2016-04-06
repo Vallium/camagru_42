@@ -9,7 +9,7 @@
             <h1>TAKE A PICTURE</h1>
             <div id="camera" style="position: relative; width: 640px; height: 480px; margin: 0 auto;">
                 <video id="video"></video>
-                <div id="calque" style="position: absolute; top: 0; left: 0; z-index: 2; width: 100%; height: 100%; background-image: url('/img/filters/1.png'); opacity: 1; background-repeat: no-repeat;"></div>
+                <div id="calque"></div>
             </div>
             <div class="filters">
                 <?php $i = 0;?>

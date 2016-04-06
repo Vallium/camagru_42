@@ -13,11 +13,11 @@ class UserController extends Controller
     protected function sendConfirmationMail($id, $mail, $hash)
     {
         if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail))
-            $passage_ligne = "\r\n";
+            $endl = "\r\n";
         else
-            $passage_ligne = "\n";
+            $endl = "\n";
 
-        $message_txt = 'Hello, welcome on Camagru. Please click the following link to activate your account:'.$passage_ligne.'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$id.'/'.$hash;
+        $message_txt = 'Hello, welcome on Camagru. Please click the following link to activate your account:'.$endl.'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$id.'/'.$hash;
 
         $message_html = "
                 <html>
@@ -35,31 +35,83 @@ class UserController extends Controller
 
         $sujet = "Camagru - Welcome! Active your account";
 
-        $header = "From: \"www-data\" www-data@antoine.doussaud.org".$passage_ligne;
-        $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$passage_ligne;
-        $header.= "MIME-Version: 1.0".$passage_ligne;
-        $header.= "Content-Type: multipart/alternative;".$passage_ligne." boundary=\"$boundary\"".$passage_ligne;
+        $header = "From: \"www-data\" www-data@antoine.doussaud.org".$endl;
+        $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$endl;
+        $header.= "MIME-Version: 1.0".$endl;
+        $header.= "Content-Type: multipart/alternative;".$endl." boundary=\"$boundary\"".$endl;
 
         //  Init mail.
-        $message = $passage_ligne."--".$boundary.$passage_ligne;
+        $message = $endl."--".$boundary.$endl;
 
         //  Add Text Format.
-        $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$passage_ligne;
-        $message.= "Content-Transfer-Encoding: 8bit".$passage_ligne;
-        $message.= $passage_ligne.$message_txt.$passage_ligne;
+        $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$endl;
+        $message.= "Content-Transfer-Encoding: 8bit".$endl;
+        $message.= $endl.$message_txt.$endl;
 
-        $message.= $passage_ligne."--".$boundary.$passage_ligne;
+        $message.= $endl."--".$boundary.$endl;
 
         //  Add HTML Format.
-        $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$passage_ligne;
-        $message.= "Content-Transfer-Encoding: 8bit".$passage_ligne;
-        $message.= $passage_ligne.$message_html.$passage_ligne;
+        $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$endl;
+        $message.= "Content-Transfer-Encoding: 8bit".$endl;
+        $message.= $endl.$message_html.$endl;
 
-        $message.= $passage_ligne."--".$boundary."--".$passage_ligne;
-        $message.= $passage_ligne."--".$boundary."--".$passage_ligne;
+        $message.= $endl."--".$boundary."--".$endl;
+        $message.= $endl."--".$boundary."--".$endl;
 
         mail($mail,$sujet,$message, $header);
     }
+
+    protected function sendRetrieveEmail($id, $mail, $hash)
+    {
+        if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail))
+            $endl = "\r\n";
+        else
+            $endl = "\n";
+
+        $message_txt = 'Hello, welcome on Camagru. You forgot your password? Please click the following link to reset it:'.$endl.'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/changPassword/'.$id.'/'.$hash;
+
+        $message_html = "
+                <html>
+                    <head>
+                    </head>
+                    <body style='background-color: rgba(50, 50, 50, 0.8); color: #ff6800; width: 960px; height: auto; margin: 0 auto;'>
+                        <h1>Hello,</h1>
+                        <p>You forgot your password? Please click the link below to reset it:</p>
+                        <div style='border: 1px solid black; width: 850px; height: auto; margin: 0 auto; padding: 5px;'>".'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/changePassword/'.$id.'/'.$hash."</div>
+                    </body>
+                </html>
+                ";
+
+        $boundary = "-----=".md5(rand());
+
+        $sujet = "Camagru - Welcome! Active your account";
+
+        $header = "From: \"www-data\" www-data@antoine.doussaud.org".$endl;
+        $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$endl;
+        $header.= "MIME-Version: 1.0".$endl;
+        $header.= "Content-Type: multipart/alternative;".$endl." boundary=\"$boundary\"".$endl;
+
+        //  Init mail.
+        $message = $endl."--".$boundary.$endl;
+
+        //  Add Text Format.
+        $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$endl;
+        $message.= "Content-Transfer-Encoding: 8bit".$endl;
+        $message.= $endl.$message_txt.$endl;
+
+        $message.= $endl."--".$boundary.$endl;
+
+        //  Add HTML Format.
+        $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$endl;
+        $message.= "Content-Transfer-Encoding: 8bit".$endl;
+        $message.= $endl.$message_html.$endl;
+
+        $message.= $endl."--".$boundary."--".$endl;
+        $message.= $endl."--".$boundary."--".$endl;
+
+        mail($mail, $sujet, $message, $header);
+    }
+
 
     public function confirmSignUp($id, $hash)
     {
@@ -107,16 +159,58 @@ class UserController extends Controller
             return;
         }
 
+        if (!empty($_POST)) {
+            if (empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+                $errors['invalid_email_format'] = true;
+            else
+            {
+                $this->loadModel('UserModel');
+
+                $stupidUser = $this->UserModel->getByEmail($_POST['email']);
+
+                if (empty($stupidUser))
+                    $errors['undefined_email'] = true;
+            }
+
+            if (empty($errors))
+            {
+                $user = new User();
+                $security_hash = sha1($stupidUser[0]->username.rand());
+
+                $user->setId($stupidUser[0]->id);
+                $user->setPassword($stupidUser[0]->password);
+                $user->setIsActivated(true);
+                $user->setSecurityHash($security_hash);
+
+                $this->UserModel->save($user);
+
+                $this->sendRetrieveEmail($stupidUser[0]->email, $stupidUser[0]->id, $security_hash);
+            }
+
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            {
+                if (empty($errors))
+                    echo json_encode(true);
+                else
+                    echo json_encode($errors);
+                die();
+            }
+            else
+            {
+                if (empty($errors))
+                    header('Location: '.WEBROOT);
+                else
+                {
+                    $v['errors'] = $errors;
+                    $this->set($v);
+                }
+            }
+        }
         $this->render('forgotPassword.php');
     }
 
     public function retrievePassword($id, $hash)
     {
-    }
-
-    public function sendRetrieveRequest()
-    {
-        echo json_encode(true);
     }
 
     public function signup()
@@ -179,7 +273,6 @@ class UserController extends Controller
             }
             else
             {
-                // TODO: treate no javascript case for signin!
                 if (empty($errors))
                     header('Location: '.WEBROOT);
                 else
@@ -192,7 +285,7 @@ class UserController extends Controller
         $this->render('signup.php');
     }
 
-    private function get_gravatar($email, $s = 80, $d = 'mm', $r = 'g') {
+    private function get_gravatar($email, $s = 360, $d = 'mm', $r = 'g') {
         $url = 'http://www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
         $url .= "?s=$s&d=$d&r=$r";

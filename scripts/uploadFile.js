@@ -33,8 +33,11 @@ function ajaxUpload(oFormElem)
             // console.log(xhr.responseText);
             var json = JSON.parse(xhr.responseText);
 
-            if (json == true)
+            if (json['state'] == true)
+            {
                 alert('Your file was upload with success!');
+                window.location.href = '/gallery/pic/' + json['last_insert_id'];
+            }
             else
                 console.log(json);
         }
