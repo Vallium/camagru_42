@@ -43,3 +43,22 @@ img.grayscale:hover {
     filter: none;
     -webkit-filter: grayscale(0%);
 }
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 25px;
+}
+
+    .pagination a {
+        color: #323232;
+    }
+
+    .pagination a:hover {
+        color: #ff6800;
+    }
+
+    .pagination a.active {
+        color: rgba(255, 104, 0, 0.6);
+        text-shadow: 0 0 7px #000;
+    }

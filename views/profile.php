@@ -31,9 +31,11 @@
             <h1>LAST UPLOADS</h1>
             <div class="row img-holder">
                 <?php foreach($profile['pictures'] as $img): ?>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12 col-sm-6">
                         <a href="/gallery/pic/<?=$img->id?>">
-                            <img src="/img/uploads/<?=$img->id?><?=$img->ext?>" alt="" class="grayscale">
+                            <div class="image">
+                                <img src="/img/uploads/<?=$img->id?><?=$img->ext?>" alt="" class="grayscale">
+                            </div>
                         </a>
                     </div>
                 <?php endforeach; ?>

@@ -6,35 +6,43 @@ use item\Comment;
 use item\Like;
 use core\EMail;
 
-$nb_img_on_gallery_load = 12;
-
 class GalleryController extends Controller
 {
-    public function index() {
+    public function index($page = 1) {
         $this->loadModel('ImageModel');
 
+        $nb_pages = ceil($this->ImageModel->countAll() / 12);
+
+        if (!is_numeric($page) || $page <= 0 || $page > $nb_pages)
+            return $this->render('404.php');
+
         $v['gallery'] = array(
-            'images' => $this->ImageModel->getLast($GLOBALS['nb_img_on_gallery_load'])
+//            'images' => $this->ImageModel->getLast($GLOBALS['nb_img_on_gallery_load']),
+            'images' => $this->ImageModel->getPics($page, 12),
+            'nb_pages' => $nb_pages,
+            'page' => $page
         );
 
         $this->set($v);
         $this->render('gallery.php');
     }
 
+    public function page($page = 1)
+    {
+        return $this->index($page);
+    }
+
     public function loadMore($actual_nb_image, $nb_to_load)
     {
-        if ($actual_nb_image < 0 || $nb_to_load <= 0 || !is_numeric($actual_nb_image) || !is_numeric($nb_to_load))
-        {
-            $this->render('404.php');
-            return;
-        }
-
-        $GLOBALS['nb_img_on_gallery_load'] = $nb_to_load;
-        $this->loadModel('ImageModel');
-
-        $images = $this->ImageModel->loadMore($actual_nb_image, $nb_to_load);
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
         {
+            if ($actual_nb_image < 0 || $nb_to_load <= 0 || !is_numeric($actual_nb_image) || !is_numeric($nb_to_load))
+                return $this->render('404.php');
+
+            $GLOBALS['nb_img_on_gallery_load'] = $nb_to_load;
+            $this->loadModel('ImageModel');
+
+            $images = $this->ImageModel->loadMore($actual_nb_image, $nb_to_load);
             if (!empty($images))
             {
                 foreach ($images as $img)
@@ -48,16 +56,10 @@ class GalleryController extends Controller
             }
             else
                 echo json_encode(false);
-            die();
+                die();
         }
-        else
-        {
-            $v['gallery'] = array(
-                'images' => $images
-            );
-            $this->set($v);
-            $this->render('gallery.php');
-        }
+
+        return $this->render('404.php');
     }
 
     public function pic($id = null, $errors = null)

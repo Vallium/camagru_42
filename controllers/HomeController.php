@@ -1,6 +1,8 @@
 <?php
 namespace controller;
 
+$nb_img_on_gallery_load = 12;
+
 class HomeController extends Controller
 {
     public function index()
@@ -8,7 +10,8 @@ class HomeController extends Controller
         $this->loadModel('ImageModel');
 
         $v['home'] = array(
-            'images' => $this->ImageModel->getLast(12),
+            'images' => $this->ImageModel->getLast($GLOBALS['nb_img_on_gallery_load']),
+            'nb_photos' => $this->ImageModel->countAll()
         );
 
         foreach($v['home']['images'] as $img)

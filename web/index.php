@@ -21,8 +21,9 @@ function __autoload($class)
         throw new Exception(sprintf('Class %s not found in %s.', $class, $path));
 }
 
-$url = explode('/', $_SERVER['REQUEST_URI']);
-array_shift($url);
+$url = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+//$url = explode('/', $_SERVER['REQUEST_URI']);
+//array_shift($url);
 
 $controller = !empty($url[0]) ? ucfirst($url[0]).'Controller' : 'HomeController';
 $method = isset($url[1]) ? $url[1] : 'index';

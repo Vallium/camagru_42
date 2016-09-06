@@ -65,6 +65,17 @@ class ImageModel extends Model
         return $this->get($req);
     }
 
+    public function getPics($actual_page, $nb_to_load)
+    {
+        $req = array (
+            'order' => 'created_at DESC',
+            'limit' => $nb_to_load,
+            'offset' => $nb_to_load * ($actual_page - 1)
+        );
+
+        return $this->get($req);
+    }
+
     public function getLast($nb)
     {
         $req = array(

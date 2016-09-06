@@ -29,12 +29,40 @@ p {
 .img-holder {
     height: 500px;
     overflow-y: scroll;
+    margin-top: 20px;
 }
 
 .img-holder img {
     width: 100%;
-    border-radius: 1px;
-    height: auto;
+    height: 100%;
+    border-radius: 3px;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.img-holder .image {
+    /*margin-right: 6px;*/
+    /*margin-left: 6px;*/
+    margin-bottom:10px;
+    overflow: hidden;
+}
+
+@media only screen and (min-width: 768px) {
+    .img-holder .image {
+        height: 87px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .img-holder .image {
+        height: 121px;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .img-holder .image {
+        height: 152px;
+    }
 }
 
 img.grayscale {

@@ -104,6 +104,22 @@ table {
     content: "\f093";
 }
 
+.right-icon:before {
+    content: '\f105';
+}
+
+.right-icon-double:before {
+    content: '\f101';
+}
+
+.left-icon:before {
+    content: '\f104';
+}
+
+.left-icon-double:before {
+    content: '\f100';
+}
+
 /* Layout */
 
 body {

@@ -84,6 +84,23 @@ abstract class Model
         }
     }
 
+    public function countAll()
+    {
+        $sql = "SELECT COUNT(*) FROM $this->table";
+
+        $this->dbConnexion();
+        try
+        {
+            $ret =  $this->db->query($sql);
+            $ret = $ret->fetch(\PDO::FETCH_NUM);
+
+            return $ret[0];
+        } catch (\PDOException $e) {
+            print 'Erreur !:'.$e->getMessage().'<br />';
+            die();
+        }
+    }
+
     protected function delete($id)
     {
         if (empty($this->table))

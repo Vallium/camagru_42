@@ -8,32 +8,41 @@
 //    echo $GLOBALS['nb_img_on_gallery_load'].PHP_EOL;
 //    echo '<pre>';
 //    print_r($gallery);
+//    die()
     ?>
     <div class="container">
         <h1>GALLERY</h1>
-        <input id="nb_img_on_gallery_load" type="hidden" value="<?=$GLOBALS['nb_img_on_gallery_load'];?>">
-        <div id="wrap">
-            <?php foreach($gallery['images'] as $img):?>
-                <?php
-                    if (file_exists(ROOT.'web'.DS.'img'.DS.'uploads'.DS.$img->id.'.jpg'))
-                        $ext = 'jpg';
-                    elseif (file_exists(ROOT.'web'.DS.'img'.DS.'uploads'.DS.$img->id.'.png'))
-                        $ext = 'png';
-                ?>
-                <div class="col-xs-12 col-sm-4 col-md-3">
-                    <a href="/gallery/pic/<?=$img->id;?>">
-                        <div class="image">
-                            <img src="/img/uploads/<?=$img->id;?>.<?=$ext?>" class="grayscale" />
-                        </div>
-                    </a>
-                </div>
-            <?php endforeach;?>
+        <?php foreach($gallery['images'] as $img):?>
+            <?php
+                if (file_exists(ROOT.'web'.DS.'img'.DS.'uploads'.DS.$img->id.'.jpg'))
+                    $ext = 'jpg';
+                elseif (file_exists(ROOT.'web'.DS.'img'.DS.'uploads'.DS.$img->id.'.png'))
+                    $ext = 'png';
+            ?>
+            <div class="col-xs-12 col-sm-4 col-md-3">
+                <a href="/gallery/pic/<?=$img->id;?>">
+                    <div class="image">
+                        <img src="/img/uploads/<?=$img->id;?>.<?=$ext?>" class="grayscale" />
+                    </div>
+                </a>
+            </div>
+        <?php endforeach;?>
+        <?php if ($gallery['nb_pages'] > 1): ?>
+        <div class="col-xs-12 pagination">
+            <?php if ($gallery['page'] > 1): ?>
+                <a href="/gallery"><i class="fa left-icon-double"></i></a>
+                <a href="/gallery/page/<?= $gallery['page'] - 1;?>"><i class="fa left-icon"></i></a>
+            <?php endif; ?>
+            <?php for ($i = 1; $i <= $gallery['nb_pages']; $i++): ?>
+                <a class="<?= ($i == $gallery['page']) ? 'active' : ''?>" href="/gallery/page/<?=$i;?>"><?=$i;?></a>
+            <?php endfor;?>
+            <?php if ($gallery['page'] < $gallery['nb_pages']): ?>
+                <a href="/gallery/page/<?= $gallery['page'] + 1;?>"><i class="fa right-icon"></i></a>
+                <a href="/gallery/page/<?= $gallery['nb_pages'];?>"><i class="fa right-icon-double"></i></a>
+            <?php endif; ?>
         </div>
-        <form id="formLoadMore" method="post" action="/gallery/loadMore/0/<?=$GLOBALS['nb_img_on_gallery_load'] + 12;?>">
-            <button class="button orange">LOAD MORE</button>
-        </form>
+        <?php endif; ?>
     </div>
     <div class="empty"></div>
 </body>
 
-<script src="/js/gallery.js"></script>
