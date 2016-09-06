@@ -4,6 +4,7 @@ namespace controller;
 
 use item\Comment;
 use item\Like;
+use core\EMail;
 
 $nb_img_on_gallery_load = 12;
 
@@ -58,19 +59,6 @@ class GalleryController extends Controller
             $this->render('gallery.php');
         }
     }
-
-//    public function getLast()
-//    {
-//        header("Content-Type: text/plain");
-//        $this->render('home.php');
-//
-//        $nbImages = isset($_POST['nbImages']) ? $_POST['nbImages'] : NULL;
-//
-//        if ($nbImages)
-//            echo $nbImages;
-//        else
-//            echo 'Error';
-//    }
 
     public function pic($id = null, $errors = null)
     {
@@ -203,7 +191,15 @@ class GalleryController extends Controller
 
                 $imgAuthor = $this->UserModel->getById($img[0]->users_id);
 
-                $this->sendCommentMail($imgAuthor[0]->email, $comment[0]->content);
+                $email = new EMail();
+
+                $email->setTo($imgAuthor[0]->email);
+                $email->setSubject('Camagru - Somone comment one of your pics');
+                $email->setMessage(
+                    '<h1>Hello, someone posted a comment on one of your pictures:</h1>'.
+                    '<p>'.$comment[0]->content.'</p>'
+                );
+                $email->send();
             }
         }
 

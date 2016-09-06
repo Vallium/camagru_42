@@ -11,111 +11,6 @@ use item\User;
 
 class UserController extends Controller
 {
-    protected function sendConfirmationMail($id, $mail, $hash)
-    {
-        if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail))
-            $endl = "\r\n";
-        else
-            $endl = "\n";
-
-        $message_txt = 'Hello, welcome on Camagru. Please click the following link to activate your account:'.$endl.'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$id.'/'.$hash;
-
-        $message_html = "
-                <html>
-                    <head>
-                    </head>
-                    <body style='background-color: rgba(50, 50, 50, 0.8); color: #ff6800; width: 960px; height: auto; margin: 0 auto;'>
-                        <h1>Hello,</h1>
-                        <p>Welcome on Camagru from Vallium @ 42, please click the link below to active your account:</p>
-                        <div style='border: 1px solid black; width: 850px; height: auto; margin: 0 auto; padding: 5px;'>".'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$id.'/'.$hash."</div>
-                    </body>
-                </html>
-                ";
-
-        $boundary = "-----=".md5(rand());
-
-        $sujet = "Camagru - Welcome! Active your account";
-
-        $header = "From: \"www-data\" www-data@antoine.doussaud.org".$endl;
-        $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$endl;
-        $header.= "MIME-Version: 1.0".$endl;
-        $header.= "Content-Type: multipart/alternative;".$endl." boundary=\"$boundary\"".$endl;
-
-        //  Init mail.
-        $message = $endl."--".$boundary.$endl;
-
-        //  Add Text Format.
-        $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$endl;
-        $message.= "Content-Transfer-Encoding: 8bit".$endl;
-        $message.= $endl.$message_txt.$endl;
-
-        $message.= $endl."--".$boundary.$endl;
-
-        //  Add HTML Format.
-        $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$endl;
-        $message.= "Content-Transfer-Encoding: 8bit".$endl;
-        $message.= $endl.$message_html.$endl;
-
-        $message.= $endl."--".$boundary."--".$endl;
-        $message.= $endl."--".$boundary."--".$endl;
-
-        mail($mail,$sujet,$message, $header);
-    }
-
-    protected function sendRetrieveEmail($id, $mail, $hash)
-    {
-        if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail))
-            $endl = "\r\n";
-        else
-            $endl = "\n";
-
-        $message_txt = 'Hello, welcome on Camagru. You forgot your password? Please click the following link to reset it:'.$endl.'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/changPassword/'.$id.'/'.$hash;
-
-        $message_html = "
-                <html>
-                    <head>
-                    </head>
-                    <body style='background-color: rgba(50, 50, 50, 0.8); color: #ff6800; width: 960px; height: auto; margin: 0 auto;'>
-                        <h1>Hello,</h1>
-                        <p>You forgot your password? Please click the link below to reset it:</p>
-                        <div style='border: 1px solid black; width: 850px; height: auto; margin: 0 auto; padding: 5px;'>".'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/changePassword/'.$id.'/'.$hash."</div>
-                    </body>
-                </html>
-                ";
-
-        $boundary = "-----=".md5(rand());
-
-        $sujet = "Camagru - Welcome! Active your account";
-
-        $header = "From: \"www-data\" www-data@antoine.doussaud.org".$endl;
-        $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$endl;
-        $header.= "MIME-Version: 1.0".$endl;
-        $header.= "Content-Type: multipart/alternative;".$endl." boundary=\"$boundary\"".$endl;
-
-        //  Init mail.
-        $message = $endl."--".$boundary.$endl;
-
-        //  Add Text Format.
-        $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$endl;
-        $message.= "Content-Transfer-Encoding: 8bit".$endl;
-        $message.= $endl.$message_txt.$endl;
-
-        $message.= $endl."--".$boundary.$endl;
-
-        //  Add HTML Format.
-        $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$endl;
-        $message.= "Content-Transfer-Encoding: 8bit".$endl;
-        $message.= $endl.$message_html.$endl;
-
-        $message.= $endl."--".$boundary."--".$endl;
-        $message.= $endl."--".$boundary."--".$endl;
-
-        mail($mail, $sujet, $message, $header);
-    }
-
-
-    // TODO: protect invalid args
-    
     public function confirmSignUp($id = null, $hash = null)
     {
         if ($id == null || $hash == null || $id < 0)
@@ -184,40 +79,41 @@ class UserController extends Controller
 
                 if (empty($stupidUser))
                     $errors['undefined_email'] = true;
+                elseif ($stupidUser->is_activated == false)
+                    $errors['user_not_activated'] = true;
             }
 
             if (empty($errors))
             {
-                $user = new User();
-                $security_hash = sha1($stupidUser[0]->username.rand());
+                $security_hash = sha1($stupidUser->username.rand());
 
-                $user->setId($stupidUser[0]->id);
-                $user->setPassword($stupidUser[0]->password);
-                $user->setIsActivated(true);
+                $user = new User();
+
+                $user->setId($stupidUser->id);
                 $user->setSecurityHash($security_hash);
+                $user->setPassword($stupidUser->password);
+                $user->setIsActivated($stupidUser->is_activated);
 
                 $this->UserModel->save($user);
 
-                $this->sendRetrieveEmail($stupidUser[0]->email, $stupidUser[0]->id, $security_hash);
+                $email = new EMail();
+
+                $email->setTo($stupidUser->email);
+                $email->setSubject('Camagru - Reset your password');
+                $email->setMessage(
+                    '<h1>Hello,</h1>'.
+                    '<p>You forgot your password? Please click the link below to reset it:</p>'.
+                    'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/changePassword/'.$stupidUser->id.'/'.$user->getSecurityHash()
+                );
+                $email->send();
             }
 
-            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
-            {
-                if (empty($errors))
-                    echo json_encode(true);
-                else
-                    echo json_encode($errors);
-                die();
-            }
+            if (empty($errors))
+                header('Location: '.WEBROOT);
             else
             {
-                if (empty($errors))
-                    header('Location: '.WEBROOT);
-                else
-                {
-                    $v['errors'] = $errors;
-                    $this->set($v);
-                }
+                $v['errors'] = $errors;
+                $this->set($v);
             }
         }
         $this->render('forgotPassword.php');
@@ -225,6 +121,12 @@ class UserController extends Controller
 
     public function changePassword($id = null, $hash = null)
     {
+        if (isset($_SESSION['username']))
+        {
+            header('Location: '.WEBROOT);
+            return;
+        }
+
         if ($id == null || $hash == null || $id < 0 || !is_numeric($id))
         {
             $this->render('404.php');
@@ -236,47 +138,51 @@ class UserController extends Controller
         if (empty($_POST))
         {
             $stupidUser = $this->UserModel->getById($id);
+
             if (empty($stupidUser) || $stupidUser[0]->security_hash != $hash)
                 $v['retrieve']['bad_link'] = true;
-            else
-                $v['retrieve'] = array(
-                    'id' => $stupidUser[0]->id,
-                    'hash' => $stupidUser[0]->security_hash
-                );
         }
         else
         {
-            if (empty($_POST['id']) || $_POST['id'] < 0 || !is_numeric($_POST['id']))
-                $errors['bad_id'] = true;
+            $user = $this->UserModel->getById($id);
+
+            if (empty($user))
+                $errors['user_not_found'] = true;
+            elseif ($hash != $user[0]->security_hash)
+                $errors['incorrect_hash'] = true;
             else
             {
-                $user = $this->UserModel->getById($_POST['id']);
+                if (empty($_POST['password']) || strlen($_POST['password']) > 100 || !preg_match('`^([a-zA-Z0-9-_]{6,100})$`', $_POST['password']))
+                    $errors['password'] = true;
 
-                if (empty($user))
-                    $errors['user_not_found'] = true;
-                elseif ($_POST['hash'] != $user[0]->security_hash)
-                    $errors['incorrect_hash'] = true;
-                else
-                {
-                    if (empty($_POST['password']) || strlen($_POST['password']) > 100 || !preg_match('`^([a-zA-Z0-9-_]{6,100})$`', $_POST['password']))
-                        $errors['password'] = true;
-
-                    if ($_POST['password'] != $_POST['passwordConf'])
-                        $errors['password_match'] = true;
-                    elseif (sha1($_POST['password']) == $user[0]->password)
-                        $errors['password_same'] = true;
-                }
+                if ($_POST['password'] != $_POST['passwordConf'])
+                    $errors['password_match'] = true;
+                elseif (sha1($_POST['password']) == $user[0]->password)
+                    $errors['password_same'] = true;
             }
+
             if (empty($errors))
             {
-                $v['retrieve'] = true;
+                $u = new User();
+
+                $u->setId($user[0]->id);
+                $u->setPassword(sha1($_POST['password']));
+                $u->setIsActivated($user[0]->is_activated);
+
+                $this->UserModel->save($u);
+
+                $v['confirm']['pw_changed'] = true;
+                $this->set($v);
+
+                return $this->render('signin.php');
             }
             else
                 $v['retrieve']['errors'] = $errors;
         }
         if (isset($v))
             $this->set($v);
-        $this->render('forgotPassword.php');
+
+        $this->render('changePassword.php');
     }
 
     public function signup()
@@ -346,22 +252,10 @@ class UserController extends Controller
                 else
                     $errors['db_error'] = true;
             }
-
-            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            if (!empty($errors))
             {
-                if (empty($errors))
-                    echo json_encode(true);
-                else
-                    echo json_encode($errors);
-                die();
-            }
-            else
-            {
-                if (!empty($errors))
-                {
-                    $v['errors'] = $errors;
-                    $this->set($v);
-                }
+                $v['errors'] = $errors;
+                $this->set($v);
             }
         }
         $this->render('signup.php');

@@ -98,6 +98,6 @@ class UserModel extends Model
             'where' => "email='$email'",
         );
 
-        return $this->get($req);
+        return $this->get($req, TRUE);
     }
 }

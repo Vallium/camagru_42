@@ -7,7 +7,7 @@
         <h1>SIGN-IN</h1>
         <?php if(isset($confirm)):?>
             <?php
-            if (isset($confirm['ok']))
+            if (isset($confirm['ok']) || isset($confirm['pw_changed']))
                 $div = 'ok';
             else if (isset($confirm['errors']))
                 $div = 'error';
@@ -22,6 +22,8 @@
                         <h2>AN ERROR OCCURED</h2>
                     <?php elseif(isset($confirm['ok'])):?>
                         <h2>ACCOUNT CONFIRMED WITH SUCCESS</h2>
+                    <?php elseif(isset($confirm['pw_changed'])):?>
+                        <h2>PASSWORD CHANGED WITH SUCCESS</h2>
                     <?php endif;?>
                 </div>
             </div>

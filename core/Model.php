@@ -47,7 +47,7 @@ abstract class Model
      * @param $param = Array avec toute possibilite de requete SQL (Select, Where, Group, having, order, limit, offset)
      * @return PDO::FET_ASSOC;
      */
-    protected function get($param)
+    protected function get($param, $only_one = FALSE)
     {
         if (empty($this->table))
             return ("Erreur");
@@ -74,6 +74,8 @@ abstract class Model
             $return->execute();
             $return->setFetchMode(\PDO::FETCH_OBJ);
             $this->dbKill();
+            if ($only_one)
+                return ($return->fetch());
             return ($return->fetchAll());
         } catch (\PDOException $e) {
             print 'Erreur !:'.$e->getMessage().'<br />';

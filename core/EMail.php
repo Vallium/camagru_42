@@ -1,7 +1,7 @@
 <?php
 namespace core;
 
-use Core\Exception\MailException;
+use core\exception\MailException;
 
 class EMail
 {
@@ -52,9 +52,7 @@ class EMail
         foreach ($this->to as $to)
         {
             // To send HTML mail, the Content-type header must be set
-            $headers = "From: \"www-data\" www-data@antoine.doussaud.org\r\n";
-            $headers .= "Reply-to: \"www-data\" www-data@antoine.doussaud.org\r\n";
-            $headers .= 'MIME-Version: 1.0' . "\r\n";
+            $headers = 'MIME-Version: 1.0' . "\r\n";
             $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
             mail($to, $this->subject, $this->message, $headers);
