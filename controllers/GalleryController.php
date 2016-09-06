@@ -17,7 +17,6 @@ class GalleryController extends Controller
             return $this->render('404.php');
 
         $v['gallery'] = array(
-//            'images' => $this->ImageModel->getLast($GLOBALS['nb_img_on_gallery_load']),
             'images' => $this->ImageModel->getPics($page, 12),
             'nb_pages' => $nb_pages,
             'page' => $page
