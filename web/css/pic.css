@@ -1,0 +1,93 @@
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+a {
+    color:black;
+}
+
+h2 {
+    text-align: left;
+    font-size: 2em;
+    font-family: GothamMedium;
+}
+
+h4 {
+    color: gray;
+    font-size: 9px;
+}
+
+h6 a:hover {
+    color: #ff6800;
+    /*border-bottom: 1px solid #ff6800;*/
+}
+
+a.comLink {
+    color: #323232;
+}
+
+a.comLink:hover {
+    color: #ff6800;
+}
+
+.like, .cross {
+    font-size: 18px;
+}
+
+.fa:hover, .fa.active:hover {
+    color: rgba(255, 104, 0, 0.5);
+    cursor: pointer;
+}
+
+.like.active {
+    color: #ff6800;
+}
+
+.like-icon {
+    width: 30px;
+    height: auto;
+}
+
+#delButton {
+    background-color: transparent;
+}
+
+.bordered {
+    margin-top: 3px;
+    border: 2px solid gray;
+    border-radius: 2px;
+    padding: 3px;
+}
+
+#formComment input {
+    height: 20px;
+    width: 100%;
+    font-size: 0.8em;
+    background-color: #525252;
+}
+
+#formComment button {
+    color: #ff6800;
+    background-color: transparent;
+    border: 1px solid #ff6800;
+    width: 100%;
+    height: 20px;
+    /*float: right;*/
+}
+
+#formComment button:hover {
+    color: black;
+    background-color: #ff6800;
+    cursor: pointer;
+}
+
+#comments {
+    word-wrap:break-word;
+    height: 250px;
+    overflow-y: scroll;
+    border: 1px solid black;
+    padding: 4px;
+    font-size: 14px;
+}
