@@ -14,8 +14,9 @@ abstract class Model
             $this->db = new \PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
-        catch (PDOException $e){
+        catch (\PDOException $e){
             print 'Erreur !:'.$e->getMessage().'<br />';
+            die();
         }
     }
 
@@ -79,6 +80,7 @@ abstract class Model
             return ($return->fetchAll());
         } catch (\PDOException $e) {
             print 'Erreur !:'.$e->getMessage().'<br />';
+            die();
         }
     }
 
@@ -89,8 +91,15 @@ abstract class Model
         $this->dbConnexion();
 //        if (is_int($id))
 //        {
+        try{
             $req = $this->db->prepare("DELETE FROM $this->table WHERE id=$id");
             $req->execute();
+        }
+        catch (\PDOException $e)
+        {
+            print 'Erreur !:'.$e->getMessage().'<br />';
+            die();
+        }
 //        }
         $this->dbKill();
     }

@@ -44,6 +44,7 @@ class UserModel extends Model
             $r->execute();
         } catch (\PDOException $e){
             print 'Erreur !:'.$e->getMessage().'<br />';
+            die();
         }
         
     }
@@ -71,6 +72,7 @@ class UserModel extends Model
             $this->dbKill();
         } catch (\PDOException $e) {
             print 'Erreur !:'.$e->getMessage().'<br />';
+            die();
         }
     }
 

@@ -40,6 +40,7 @@ class ImageModel extends Model
             $r->execute();
         } catch (\PDOException $e){
             print 'Erreur !:'.$e->getMessage().'<br />';
+            die();
         }
 
     }
