@@ -1,7 +1,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>Camagru - Picture</title>
-    <script src="/scripts/pic.js"></script>
+    <script src="/js/pic.js"></script>
     <link href="/css/pic.css" rel="stylesheet" type="text/css">
     <?php if (!empty($pic['errors'])): ?>
         <style>
@@ -13,17 +13,17 @@
 </head>
 
 <body>
-    <div class="holder" id="holder">
-        <div class="first-col">
+    <div class="container" id="container">
+        <div class="col-xs-12 col-md-6">
             <?php
-            if (file_exists(ROOT.'img'.DS.'uploads'.DS.$pic['picture'][0]->id.'.jpg'))
+            if (file_exists(ROOT.'web'.DS.'img'.DS.'uploads'.DS.$pic['picture'][0]->id.'.jpg'))
                 $ext = 'jpg';
-            elseif (file_exists(ROOT.'img'.DS.'uploads'.DS.$pic['picture'][0]->id.'.png'))
+            elseif (file_exists(ROOT.'web'.DS.'img'.DS.'uploads'.DS.$pic['picture'][0]->id.'.png'))
                 $ext = 'png';
             ?>
             <img id="dblClickOnImg" src="/img/uploads/<?= $pic['picture'][0]->id?>.<?=$ext;?>" alt="">
         </div>
-        <div class="sec-col">
+        <div class="col-xs-12 col-md-6">
             <a id="likeButton" href="/gallery/like/<?= $pic['picture'][0]->id?>">
                 <input type="hidden" id="img-id" value="<?= $pic['picture'][0]->id?>">
                 <?php if (isset($pic['is_liked'][0]->isLiked) && $pic['is_liked'][0]->isLiked):?>
@@ -58,18 +58,20 @@
                 <?php endforeach;?>
             </div>
             <?php if (isset($_SESSION['loggedin'])):?>
-                <form id="formComment" method="post" action="/gallery/postComment">
-                    <input id="inCom" type="text" name="content" placeholder="Post your comment...">
-                    <input type="hidden" name="users_id" value="<?=$_SESSION['id'];?>">
-                    <input type="hidden" name="images_id" value="<?=$pic['picture'][0]->id;?>">
-                    <button type="submit">POST COMMENT</button>
-                </form>
+                <div class="row-nogutter bordered">
+                    <form id="formComment" method="post" action="/gallery/postComment">
+                        <div class="col-xs-12-nogutter col-sm-9-nogutter">
+                            <input id="inCom" type="text" name="content" placeholder="Post your comment...">
+                        </div>
+                        <input type="hidden" name="users_id" value="<?=$_SESSION['id'];?>">
+                        <input type="hidden" name="images_id" value="<?=$pic['picture'][0]->id;?>">
+                        <div class="col-xs-12-nogutter col-sm-3-nogutter">
+                           <button type="submit">POST COMMENT</button>
+                        </div>
+                    </form>
+                </div>
             <?php endif;?>
         </div>
     </div>
     <div class="empty"></div>
-    <?php
-//        echo '<pre>';
-//        print_r($pic);
-    ?>
 </body>

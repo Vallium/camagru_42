@@ -1,6 +1,7 @@
 <?php
 namespace controller;
 
+use core\EMail;
 use item\User;
 
 /**
@@ -113,9 +114,19 @@ class UserController extends Controller
     }
 
 
-    public function confirmSignUp($id, $hash)
+    // TODO: protect invalid args
+    
+    public function confirmSignUp($id = null, $hash = null)
     {
+        if ($id == null || $hash == null || $id < 0)
+        {
+            $this->render('404.php');
+            return;
+        }
+
         $errors = array();
+        $v = array();
+
         $this->loadModel('UserModel');
 
         $user = $this->UserModel->getById($id);
@@ -144,9 +155,12 @@ class UserController extends Controller
                 $this->UserModel->save($obj);
                 $v['confirm']['ok'] = true;
             }
+            else
+                $v['confirm']['errors']['error_occured'] = true;
         }
         else
             $v['confirm']['errors'] = $errors;
+
         $this->set($v);
         $this->render('signin.php');
     }
@@ -209,8 +223,60 @@ class UserController extends Controller
         $this->render('forgotPassword.php');
     }
 
-    public function retrievePassword($id, $hash)
+    public function changePassword($id = null, $hash = null)
     {
+        if ($id == null || $hash == null || $id < 0 || !is_numeric($id))
+        {
+            $this->render('404.php');
+            return;
+        }
+
+        $this->loadModel('UserModel');
+
+        if (empty($_POST))
+        {
+            $stupidUser = $this->UserModel->getById($id);
+            if (empty($stupidUser) || $stupidUser[0]->security_hash != $hash)
+                $v['retrieve']['bad_link'] = true;
+            else
+                $v['retrieve'] = array(
+                    'id' => $stupidUser[0]->id,
+                    'hash' => $stupidUser[0]->security_hash
+                );
+        }
+        else
+        {
+            if (empty($_POST['id']) || $_POST['id'] < 0 || !is_numeric($_POST['id']))
+                $errors['bad_id'] = true;
+            else
+            {
+                $user = $this->UserModel->getById($_POST['id']);
+
+                if (empty($user))
+                    $errors['user_not_found'] = true;
+                elseif ($_POST['hash'] != $user[0]->security_hash)
+                    $errors['incorrect_hash'] = true;
+                else
+                {
+                    if (empty($_POST['password']) || strlen($_POST['password']) > 100 || !preg_match('`^([a-zA-Z0-9-_]{6,100})$`', $_POST['password']))
+                        $errors['password'] = true;
+
+                    if ($_POST['password'] != $_POST['passwordConf'])
+                        $errors['password_match'] = true;
+                    elseif (sha1($_POST['password']) == $user[0]->password)
+                        $errors['password_same'] = true;
+                }
+            }
+            if (empty($errors))
+            {
+                $v['retrieve'] = true;
+            }
+            else
+                $v['retrieve']['errors'] = $errors;
+        }
+        if (isset($v))
+            $this->set($v);
+        $this->render('forgotPassword.php');
     }
 
     public function signup()
@@ -258,11 +324,29 @@ class UserController extends Controller
                 $user->setEmail($_POST['email']);
                 $user->setPassword(sha1($_POST['password']));
                 $user->setSecurityHash($security_hash);
+
                 $this->UserModel->save($user);
 
+                $last_insert = $this->UserModel->getDB()->lastInsertId();
+
                 // send email with security hash
-                $this->sendConfirmationMail($this->UserModel->getDB()->lastInsertId(), $_POST['email'], $security_hash);
+                if ($last_insert)
+                {
+                    $email = new EMail();
+
+                    $email->setTo($user->getEmail());
+                    $email->setSubject('Camagru - Activate your account');
+                    $email->setMessage(
+                        '<h1>Hello,</h1>'.
+                        '<p>Welcome on Camagru from Vallium @ 42, please click the link below to active your account:</p>'.
+                        'http://'.$_SERVER['HTTP_HOST'].WEBROOT.'user/confirmSignUp/'.$last_insert.'/'.$security_hash
+                    );
+                    $email->send();
+                }
+                else
+                    $errors['db_error'] = true;
             }
+
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
             {
                 if (empty($errors))
@@ -273,9 +357,7 @@ class UserController extends Controller
             }
             else
             {
-                if (empty($errors))
-                    header('Location: '.WEBROOT);
-                else
+                if (!empty($errors))
                 {
                     $v['errors'] = $errors;
                     $this->set($v);
@@ -286,7 +368,7 @@ class UserController extends Controller
     }
 
     private function get_gravatar($email, $s = 360, $d = 'mm', $r = 'g') {
-        $url = 'http://www.gravatar.com/avatar/';
+        $url = 'https://www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
         $url .= "?s=$s&d=$d&r=$r";
 
@@ -304,8 +386,6 @@ class UserController extends Controller
         if (!empty($_POST))
         {
             $this->loadModel('UserModel');
-
-            $errors = array();
 
             if (empty($_POST['username']) || !is_string($_POST['username']) || strlen($_POST['username'] > 36) || !preg_match('`^([a-zA-Z0-9-_]{2,36})$`', $_POST['username']))
                 $errors['username'] = true;
@@ -355,7 +435,6 @@ class UserController extends Controller
             }
             else
             {
-                // TODO: treate no javascript case for signin!
                 if (!empty($errors))
                 {
                     $v['errors'] = $errors;
@@ -375,20 +454,31 @@ class UserController extends Controller
         header('Location: '.WEBROOT);
     }
 
-    public function profile($user_id) {
+    public function profile($user_id = null) {
+        if ($user_id == null || $user_id < 0 || !is_numeric($user_id))
+            header('Location: '.WEBROOT);
+
         $this->loadModel('UserModel');
         $this->loadModel('ImageModel');
 
+        $user = $this->UserModel->getById($user_id);
+
+        if (empty($user))
+        {
+            $this->render('404.php');
+            return;
+        }
+
         $v['profile'] = array(
-            'user' => $this->UserModel->getById($user_id),
+            'user' => $user,
             'pictures' => $this->ImageModel->getLastByUserId($user_id)
         );
 
         foreach($v['profile']['pictures'] as $pic)
         {
-            if (file_exists(ROOT.'img/uploads/'.$pic->id.'.jpg'))
+            if (file_exists(ROOT.'web'.DS.'img/uploads/'.$pic->id.'.jpg'))
                 $pic->ext = '.jpg';
-            elseif (file_exists(ROOT.'img/uploads/'.$pic->id.'.png'))
+            elseif (file_exists(ROOT.'web'.DS.'img/uploads/'.$pic->id.'.png'))
                 $pic->ext = '.png';
         }
         $this->set($v);

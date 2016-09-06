@@ -5,7 +5,7 @@ namespace controller;
 use item\Comment;
 use item\Like;
 
-$nb_img_on_gallery_load = 6;
+$nb_img_on_gallery_load = 12;
 
 class GalleryController extends Controller
 {
@@ -22,6 +22,12 @@ class GalleryController extends Controller
 
     public function loadMore($actual_nb_image, $nb_to_load)
     {
+        if ($actual_nb_image < 0 || $nb_to_load <= 0 || !is_numeric($actual_nb_image) || !is_numeric($nb_to_load))
+        {
+            $this->render('404.php');
+            return;
+        }
+
         $GLOBALS['nb_img_on_gallery_load'] = $nb_to_load;
         $this->loadModel('ImageModel');
 
@@ -32,9 +38,9 @@ class GalleryController extends Controller
             {
                 foreach ($images as $img)
                 {
-                    if (file_exists(ROOT.'img/uploads/'.$img->id.'.jpg'))
+                    if (file_exists(ROOT.'web'.DS.'img/uploads/'.$img->id.'.jpg'))
                         $img->ext = '.jpg';
-                    elseif (file_exists(ROOT.'img/uploads/'.$img->id.'.png'))
+                    elseif (file_exists(ROOT.'web'.DS.'img/uploads/'.$img->id.'.png'))
                         $img->ext = '.png';
                 }
                 echo json_encode($images);
@@ -53,22 +59,22 @@ class GalleryController extends Controller
         }
     }
 
-    public function getLast()
-    {
-        header("Content-Type: text/plain");
-        $this->render('home.php');
-
-        $nbImages = isset($_POST['nbImages']) ? $_POST['nbImages'] : NULL;
-
-        if ($nbImages)
-            echo $nbImages;
-        else
-            echo 'Error';
-    }
+//    public function getLast()
+//    {
+//        header("Content-Type: text/plain");
+//        $this->render('home.php');
+//
+//        $nbImages = isset($_POST['nbImages']) ? $_POST['nbImages'] : NULL;
+//
+//        if ($nbImages)
+//            echo $nbImages;
+//        else
+//            echo 'Error';
+//    }
 
     public function pic($id = null, $errors = null)
     {
-        if ($id == null)
+        if ($id == null || $id < 0 || !is_numeric($id))
             header('Location: '.WEBROOT);
 
         $this->loadModel('ImageModel');
@@ -76,8 +82,16 @@ class GalleryController extends Controller
         $this->loadModel('LikeModel');
         $this->loadModel('UserModel');
 
+        $picture = $this->ImageModel->getImageById($id);
+
+        if (empty($picture))
+        {
+            $this->render('404.php');
+            return;
+        }
+
         $v['pic'] = array(
-            'picture' => $this->ImageModel->getImageById($id),
+            'picture' => $picture,
             'comments' => $this->CommentModel->getLastComments($id),
             'likes' => $this->LikeModel->countLikesByImageId($id)
         );
@@ -155,9 +169,13 @@ class GalleryController extends Controller
 
         if (!empty($_POST)) {
             $this->loadModel('CommentModel');
+            $this->loadModel('ImageModel');
 
             if (empty($_POST['content']) || !is_string($_POST['content']))
                 $errors['content'] = true;
+
+            if (empty($this->ImageModel->getImageById($_POST['images_id'])))
+                $errors['img_not_found'] = true;
 
             if (empty($errors)) {
                 $comment = new Comment();
@@ -201,9 +219,7 @@ class GalleryController extends Controller
             if (!empty($json))
                 header('Location: '.WEBROOT.'gallery/pic/'.$_POST['images_id']);
             elseif (!empty($errors))
-            {
                 $this->pic($_POST['images_id'], $errors);
-            }
             else
                 header('Location: '.WEBROOT);
         }
@@ -211,14 +227,19 @@ class GalleryController extends Controller
 
     public function like($image_id = null)
     {
-        if ($image_id == null)
+        if ($image_id == null || $image_id < 0 || !is_numeric($image_id))
         {
             header('Location: '.WEBROOT);
             return;
         }
 
+        $this->loadModel('ImageModel');
+        if (empty($this->ImageModel->getImageById($image_id)))
+            $errors['img_not_found'] = true;
+
         if (!isset($_SESSION['username']))
             $errors['not_connected'] = true;
+
 
         if (empty($errors))
         {
@@ -226,7 +247,7 @@ class GalleryController extends Controller
             if ($this->LikeModel->isLiked($image_id, $_SESSION['id'])[0]->isLiked)
             {
                 $this->LikeModel->deleteLike($this->LikeModel->findLikeId($image_id, $_SESSION['id'])[0]->id);
-                $json = false;
+                $json['state'] = false;
             }
             else
             {
@@ -235,7 +256,7 @@ class GalleryController extends Controller
                 $like->setImagesId($image_id);
                 $like->setUsersId($_SESSION['id']);
                 $this->LikeModel->save($like);
-                $json = true;
+                $json['state'] = true;
             }
         }
 
@@ -245,8 +266,13 @@ class GalleryController extends Controller
                 echo json_encode($json);
             else
                 echo json_encode($errors);
-            die();
         }
-        $this->pic($image_id);
+        else
+        {
+            if (empty($errors))
+                header('Location: '.WEBROOT.'gallery/pic/'.$image_id);
+            else
+                $this->pic($image_id, $errors);
+        }
     }
 }

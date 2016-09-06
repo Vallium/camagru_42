@@ -1,60 +1,64 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="icon" type="image/png" href="/img/favicon/orange.png" />
-        <link href="/css/layout.css" rel="stylesheet" type="text/css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="/web/img/favicon/orange.png" />
+        <link href="/css/layout.css" rel="stylesheet" type="text/css" />
+        <link href="/css/grid.css" rel="stylesheet" type="text/css" />
     </head>
 
     <body>
         <header>
-            <nav class="secondary-nav">
-                <div class="content-holder">
-                    <div class="left-side">
-                        <?php
-//                        function get_gravatar($email, $s = 80, $d = 'mm', $r = 'g') {
-//                            $url = 'http://www.gravatar.com/avatar/';
-//                            $url .= md5(strtolower(trim($email)));
-//                            $url .= "?s=$s&d=$d&r=$r";
-//
-//                            return $url;
-//                        }
-                        ?>
-                        <?php if (isset($_SESSION['username'])):?>
-<!--                            --><?php //if (file_exists(ROOT.'img'.DS.'users'.DS.$_SESSION['id'].'.png')): ?>
-<!--                                <img src="/img/users/--><?//= $_SESSION['id']?><!--.png" alt="Pic">-->
-<!--                            --><?php //elseif (file_exists(ROOT.'img'.DS.'users'.DS.$_SESSION['id'].'.jpg')): ?>
-<!--                                <img src="/img/users/--><?//= $_SESSION['id']?><!--.jpg" alt="Pic">-->
-<!--                            --><?php //else :?>
-<!--                                <img src="/img/users/0.png" alt="Pic">-->
-<!--                            --><?php //endif;?>
-                            <img src="<?=$_SESSION['gravatar'];?>" alt="Pic">
-                            <a href="/user/profile/<?= $_SESSION['id']?>">PROFILE</a>
-                            <a href="/upload">UPLOAD A FILE</a>
-                            <a href="/upload/takePicture">TAKE A PICTURE</a>
-                            <a href="/user/logout">LOGOUT</a>
-                        <?php else : ?>
-                        <a href="/user/signin">SIGN-IN</a> / <a href="/user/signup">SIGN-UP</a>
-                        <?php endif; ?>
+            <nav>
+                <div class="container">
+                    <div class="bar">
+                        <div class="brand">CAMAGRU</div>
+                        <div class="mobile-nav" id="mobile-nav-icon">
+                            <i class="fa nav-icon"></i>
+                        </div>
+                    </div>
+                    <div class="main-nav" id="menu">
+                        <ul>
+                            <li>
+                                <a href="/">HOME</a>
+                            </li>
+                            <li>
+                                <a href="/gallery">GALLERY</a>
+                            </li>
+                            <li>
+                                <a href="/upload">UPLOAD A FILE</a>
+                            </li>
+                            <li>
+                                <a href="/upload/takePicture">TAKE A PICTURE</a>
+                            </li>
+                        </ul>
+                        <ul class="nav-right">
+                            <?php if (isset($_SESSION['username'])):?>
+                            <li>
+                                <a href="/user/profile/<?= $_SESSION['id']?>">
+                                    <img src="<?=$_SESSION['gravatar'];?>" alt="Pic">
+                                    PROFILE
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/user/logout">LOGOUT</a>
+                            </li>
+                            <?php else : ?>
+                            <li>
+                                <a href="/user/signin">SIGN-IN</a>
+                            </li>
+                            <li>
+                                <a href="/user/signup">SIGN-UP</a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
                     </div>
                 </div>
             </nav>
-            <div class="contenHolder">
-                <div id="particles-js">
-                    <nav class="primary-nav">
-                        <ul>
-                            <li><a href="/">HOME</a></li>
-                            <li><a href="/gallery">GALLERY</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
         </header>
-
         <?php echo $content_for_layout;?>
 
         <footer>COPYRIGHT @ 2016 - CAMAGRU MADE BY VALLIUM FOR 42</footer>
-
-        <script src="/scripts/particles/particles.js"></script>
-        <script src="/scripts/particles/app.js"></script>
     </body>
+    <script src="/js/layout.js"></script>
 </html>

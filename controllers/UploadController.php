@@ -8,14 +8,49 @@ $MAX_UPLOAD_SIZE = 10485760;
 
 class UploadController extends Controller
 {
-    public function index()
+    private function getLastPics()
     {
-        $this->render('uploadFile.php');
+        $this->loadModel('ImageModel');
+
+        $images = $this->ImageModel->getLast(6);
+
+        foreach($images as $img)
+        {
+            if (file_exists(ROOT.'web'.DS.'img/uploads/'.$img->id.'.jpg'))
+                $img->ext = '.jpg';
+            elseif (file_exists(ROOT.'web'.DS.'img/uploads/'.$img->id.'.png'))
+                $img->ext = '.png';
+        }
+
+        return $images;
     }
 
-    public function takePicture()
+    public function index($errors = false)
     {
-        $this->render('takePicture.php');
+        if (isset($_SESSION['loggedin']))
+        {
+            $v['upload']['errors'] = $errors;
+            $v['upload']['last_pics'] = $this->getLastPics();
+
+            $this->set($v);
+            $this->render('uploadFile.php');
+        }
+        else
+            header('Location: '.WEBROOT.'user/signin');
+    }
+
+    public function takePicture($errors = false)
+    {
+        if (isset($_SESSION['loggedin']))
+        {
+            $v['upload']['errors'] = $errors;
+            $v['upload']['last_pics'] = $this->getLastPics();
+
+            $this->set($v);
+            $this->render('takePicture.php');
+        }
+        else
+            header('Location: '.WEBROOT.'user/signin');
     }
 
     private function mergeImages($imgId, $filterId)
@@ -47,7 +82,6 @@ class UploadController extends Controller
         if (!empty($_POST) && isset($_SESSION['loggedin']))
         {
             $errors = array();
-            $this->loadModel('ImageModel');
 
             if ($_FILES['fileToUpload']['error'] > 0)
                 $errors['upload'] = true;
@@ -58,42 +92,45 @@ class UploadController extends Controller
 
             if (empty($errors))
             {
-                $img = new Img();
+                $filter_root = ROOT.'web/img/filters/'.$_POST['filterId'].'.png';
+                $tmp_img = imagecreatefromstring(file_get_contents($_FILES['fileToUpload']['tmp_name']));
 
-                $img->setUsersId($_SESSION['id']);
-                $this->ImageModel->save($img);
-                $postedId = $this->ImageModel->getLastInsertId();
+                list($width, $height) = getimagesize($_FILES['fileToUpload']['tmp_name']);
+                list($filter_w, $filter_h) = getimagesize($filter_root);
 
-                $json['last_insert_id'] = $postedId;
+                $tmp_filter = imagecreatefrompng($filter_root);
+                $filter = imagecreatetruecolor($width, $height);
 
-                imagepng(imagecreatefromstring(file_get_contents($_FILES['fileToUpload']['tmp_name'])), ROOT.'img/uploads/'.$postedId.'.png');
+                imagealphablending($filter, false);
+                imagesavealpha($filter, true);
+                imagecolortransparent($filter);
 
-                $this->mergeImages($postedId, $_POST['filterId']);
-            }
+                $a = imagecopyresampled($filter, $tmp_filter, 0, 0, 0, 0, $width, $height, $filter_w, $filter_h);
+                $b = imagecopyresampled($tmp_img, $filter, 0, 0, 0, 0, $width, $height, $width, $height);
 
-            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
-            {
-                if (!empty($errors))
-                    echo json_encode($errors);
-                else
-                {
-                    $json['state'] = true;
-                    echo json_encode($json);
-                }
-                die();
-            }
-            else
-            {
+                if ($a == false || $b == false)
+                    $errors['creation'] = true;
+
+                imagedestroy($tmp_filter);
+                imagedestroy($filter);
+
                 if (empty($errors))
-                    header('Location: '.WEBROOT.'pic/'.$postedId);
-                else
                 {
-                    $v['errors'] = $errors;
-                    $this->set($v);
-                    $this->render('uploadFile.php');
-                }
+                    $this->loadModel('ImageModel');
+                    $img = new Img();
 
+                    $img->setUsersId($_SESSION['id']);
+                    $this->ImageModel->save($img);
+                    $postedId = $this->ImageModel->getLastInsertId();
+
+                    imagepng($tmp_img, ROOT.'web/img/uploads/'.$postedId.'.png');
+                    imagedestroy($tmp_img);
+                    header('Location: '.WEBROOT.'gallery/pic/'.$postedId);
+                }
             }
+
+            if (!empty($errors))
+                $this->index($errors);
         }
         else
             header('Location: '.WEBROOT);
@@ -101,51 +138,64 @@ class UploadController extends Controller
 
     public function uploadImageFromWebcam()
     {
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        if (!empty($_POST) && isset($_SESSION['loggedin']))
         {
-            if (!empty($_POST) && isset($_SESSION['loggedin'])) {
-                $errors = array();
-                $this->loadModel('ImageModel');
+            $errors = array();
 
-                if ($_POST['base64img'] == 'none')
-                    $errors['base64img'] = true;
+            if ($_POST['base64img'] == 'none')
+                $errors['base64img'] = true;
 
-                if (empty($errors)) {
+            if (empty($errors))
+            {
+                $filter_root = ROOT.'web/img/filters/'.$_POST['filterId'].'.png';
+                $tmp_img = imagecreatefromstring(base64_decode(explode(',', $_POST['base64img'])[1]));
+
+                $width = 640;
+                $height = 480;
+                list($filter_w, $filter_h) = getimagesize($filter_root);
+
+                $tmp_filter = imagecreatefrompng($filter_root);
+                $filter = imagecreatetruecolor($width, $height);
+
+                imagealphablending($filter, false);
+                imagesavealpha($filter, true);
+                imagecolortransparent($filter);
+
+                $a = imagecopyresampled($filter, $tmp_filter, 0, 0, 0, 0, $width, $height, $filter_w, $filter_h);
+                $b = imagecopyresampled($tmp_img, $filter, 0, 0, 0, 0, $width, $height, $width, $height);
+
+                if ($a == false || $b == false)
+                    $errors['creation'] = true;
+
+                imagedestroy($tmp_filter);
+                imagedestroy($filter);
+
+                if (empty($errors))
+                {
+                    $this->loadModel('ImageModel');
                     $img = new Img();
 
                     $img->setUsersId($_SESSION['id']);
                     $this->ImageModel->save($img);
                     $postedId = $this->ImageModel->getLastInsertId();
 
-                    $ifp = fopen('img/uploads/'.$postedId.'.png', "wb");
-
-                    $base64str = $_POST['base64img'];
-                    $data = explode(',', $base64str);
-
-                    fwrite($ifp, base64_decode($data[1]));
-                    fclose($ifp);
-
-                    $this->mergeImages($postedId, $_POST['filterId']);
+                    imagepng($tmp_img, ROOT.'web/img/uploads/'.$postedId.'.png');
+                    imagedestroy($tmp_img);
+                    header('Location: '.WEBROOT.'gallery/pic/'.$postedId);
                 }
-
-                if (!empty($errors))
-                    echo json_encode($errors);
-                else
-                    echo json_encode(true);
-                die();
             }
-            else
-                header('Location: '.WEBROOT);
+
+            if (!empty($errors))
+                $this->takePicture($errors);
         }
         else
-            $this->render('404.php');
+            header('Location: '.WEBROOT);
     }
 
     public function deleteImage()
     {
-        if (isset($_POST))
+        if (!empty($_POST))
         {
-            $errors = array();
             if (isset($_SESSION['loggedin']) && $_SESSION['id'] == $_POST['imgUserId'])
             {
                 $this->loadModel('ImageModel');

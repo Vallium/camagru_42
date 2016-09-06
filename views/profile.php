@@ -3,10 +3,10 @@
     <title>Camagru - <?=$profile['user'][0]->username?></title>
 </head>
 <body>
-    <div class="holder">
+    <div class="container">
         <?php
         function get_gravatar($email, $s = 80, $d = 'mm', $r = 'g') {
-            $url = 'http://www.gravatar.com/avatar/';
+            $url = 'https://www.gravatar.com/avatar/';
             $url .= md5(strtolower(trim($email)));
             $url .= "?s=$s&d=$d&r=$r";
 
@@ -14,30 +14,28 @@
         }
         ?>
         <?php if (!empty($profile['user'])):?>
-        <div class="first-col">
-            <div class="picture">
-                <div class="hexagon hexagon2">
-                    <div class="hexagon-in1">
-                        <div id="hexagon-in2" style="background-image: url(<?=get_gravatar($profile['user'][0]->email, 360);?>);">
-                            <img id="hexaImg" src="<?=get_gravatar($profile['user'][0]->email, 360);?>" alt="Pic" style="display: none;">
-                        </div>
-                    </div>
+        <div class="col-xs-12 col-sm-7">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4" style="text-align: center">
+                    <img class="img-user" src="<?=get_gravatar($profile['user'][0]->email, 360);?>" alt="Pic">
                 </div>
+                <div class="col-xs-12 col-sm-8">
+                    <h2><?= strtoupper($profile['user'][0]->username)?></h2>
+                    <?php $date = new DateTime($profile['user'][0]->created_at); ?>
+                    <h6>Member since <?= date('l jS \of F Y', $date->getTimestamp());?></h6>
+                </div>
+                <div class="col-xs-12" style="height: 30px;"></div>
             </div>
-            <div class="user">
-                <h2><?= strtoupper($profile['user'][0]->username)?></h2>
-                <?php $date = new DateTime($profile['user'][0]->created_at); ?>
-                <h6>Member since <?= date('l jS \of F Y', $date->getTimestamp());?></h6>
-            </div>
-            <div class="clear"></div>
         </div>
-        <div class="sec-col">
+        <div class="col-xs-12 col-sm-5">
             <h1>LAST UPLOADS</h1>
-            <div class="img-holder">
+            <div class="row img-holder">
                 <?php foreach($profile['pictures'] as $img): ?>
-                    <a href="/gallery/pic/<?=$img->id?>">
-                        <img src="/img/uploads/<?=$img->id?><?=$img->ext?>" alt="" class="grayscale">
-                    </a>
+                    <div class="col-xs-6">
+                        <a href="/gallery/pic/<?=$img->id?>">
+                            <img src="/img/uploads/<?=$img->id?><?=$img->ext?>" alt="" class="grayscale">
+                        </a>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -51,4 +49,3 @@
 //    print_r($profile);
     ?>
 </body>
-<script src="/scripts/profile.js"></script>
