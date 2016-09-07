@@ -224,6 +224,7 @@ nav {
 .main-nav ul li img {
     float: left;
     margin-top: 0.7em;
+    margin-right: 5px;
     height: 2.1em;
     width: auto;
     border-radius: 50%;

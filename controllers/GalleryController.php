@@ -13,6 +13,9 @@ class GalleryController extends Controller
 
         $nb_pages = ceil($this->ImageModel->countAll() / 12);
 
+        if (!$nb_pages)
+            $nb_pages = 1;
+
         if (!is_numeric($page) || $page <= 0 || $page > $nb_pages)
             return $this->render('404.php');
 
@@ -97,55 +100,6 @@ class GalleryController extends Controller
             $v['pic']['errors'] = $errors;
         $this->set($v);
         $this->render('pic.php');
-    }
-
-    protected function sendCommentMail($mail, $content)
-    {
-        if (!preg_match("#^[a-z0-9._-]+@(hotmail|live|msn).[a-z]{2,4}$#", $mail))
-            $endl = "\r\n";
-        else
-            $endl = "\n";
-
-        $message_txt = "Hello, someone posted a comment on one of your pictures:".$endl.$content;
-
-        $message_html = "
-                <html>
-                    <head>
-                    </head>
-                    <body style='background-color: rgba(50, 50, 50, 0.8); color: #ff6800; width: 960px; height: auto; margin: 0 auto;'>
-                        <h1>Hello, someone posted a comment on one of your pictures:</h1>
-                        <div style='border: 1px solid black; width: 850px; height: auto; margin: 0 auto; padding: 5px;'>".$content."</div>
-                    </body>
-                </html>
-                ";
-
-        $boundary = "-----=".md5(rand());
-
-        $subject = "Camagru - Someone posted a comment!";
-
-        $header = "From: \"www-data\" www-data@antoine.doussaud.org".$endl;
-        $header.= "Reply-to: \"www-data\" www-data@antoine.doussaud.org".$endl;
-        $header.= "MIME-Version: 1.0".$endl;
-        $header.= "Content-Type: multipart/alternative;".$endl." boundary=\"$boundary\"".$endl;
-
-        //=====Création du message.
-        $message = $endl."--".$boundary.$endl;
-        //=====Ajout du message au format texte.
-        $message.= "Content-Type: text/plain; charset=\"ISO-8859-1\"".$endl;
-        $message.= "Content-Transfer-Encoding: 8bit".$endl;
-        $message.= $endl.$message_txt.$endl;
-        //==========
-
-        $message.= $endl."--".$boundary.$endl;
-        //=====Ajout du message au format HTML
-        $message.= "Content-Type: text/html; charset=\"ISO-8859-1\"".$endl;
-        $message.= "Content-Transfer-Encoding: 8bit".$endl;
-        $message.= $endl.$message_html.$endl;
-
-        $message.= $endl."--".$boundary."--".$endl;
-        $message.= $endl."--".$boundary."--".$endl;
-
-        mail($mail, $subject, $message, $header);
     }
 
     public function postComment()

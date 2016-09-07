@@ -201,10 +201,10 @@ class UploadController extends Controller
                 $this->loadModel('ImageModel');
 
                 $this->ImageModel->deleteImage($_POST['imgId']);
-                if (file_exists(ROOT.'img'.DS.'uploads'.DS.$_POST['imgId'].'.jpg'))
-                    unlink(ROOT.'img'.DS.'uploads'.DS.$_POST['imgId'].'.jpg');
-                elseif (file_exists(ROOT.'img'.DS.'uploads'.DS.$_POST['imgId'].'.png'))
-                    unlink(ROOT.'img'.DS.'uploads'.DS.$_POST['imgId'].'.png');
+                if (file_exists(ROOT.'web/img'.DS.'uploads'.DS.$_POST['imgId'].'.jpg'))
+                    unlink(ROOT.'web/img'.DS.'uploads'.DS.$_POST['imgId'].'.jpg');
+                elseif (file_exists(ROOT.'web/img'.DS.'uploads'.DS.$_POST['imgId'].'.png'))
+                    unlink(ROOT.'web/img'.DS.'uploads'.DS.$_POST['imgId'].'.png');
             }
 
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')

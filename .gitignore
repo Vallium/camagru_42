@@ -2,6 +2,7 @@
 /.idea/
 /web/img/uploads_old/
 /web/img/uploads/*.png
+/web/img/uploads/*.jpg
 .DS_Store
 ._.DS_Store
 camagru.db
