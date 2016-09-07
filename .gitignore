@@ -1,6 +1,7 @@
 /.sass-cache/
 /.idea/
 /web/img/uploads_old/
+/web/img/uploads/*.png
 .DS_Store
 ._.DS_Store
 camagru.db
