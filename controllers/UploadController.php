@@ -93,42 +93,48 @@ class UploadController extends Controller
             if (empty($errors))
             {
                 $filter_root = ROOT.'web/img/filters/'.$_POST['filterId'].'.png';
-                $tmp_img = imagecreatefromstring(file_get_contents($_FILES['fileToUpload']['tmp_name']));
 
-                list($width, $height) = getimagesize($_FILES['fileToUpload']['tmp_name']);
-                list($filter_w, $filter_h) = getimagesize($filter_root);
-
-                $tmp_filter = imagecreatefrompng($filter_root);
-                $filter = imagecreatetruecolor($width, $height);
-
-                imagealphablending($filter, false);
-                imagesavealpha($filter, true);
-                imagecolortransparent($filter);
-
-                $a = imagecopyresampled($filter, $tmp_filter, 0, 0, 0, 0, $width, $height, $filter_w, $filter_h);
-                $b = imagecopyresampled($tmp_img, $filter, 0, 0, 0, 0, $width, $height, $width, $height);
-
-                if ($a == false || $b == false)
-                    $errors['creation'] = true;
-
-                imagedestroy($tmp_filter);
-                imagedestroy($filter);
+                try {
+                    $tmp_img = imagecreatefromstring(file_get_contents($_FILES['fileToUpload']['tmp_name']));
+                } catch (\Exception $e) {
+                    $errors['content'] = true;
+                }
 
                 if (empty($errors))
                 {
-                    $this->loadModel('ImageModel');
-                    $img = new Img();
+                    list($width, $height) = getimagesize($_FILES['fileToUpload']['tmp_name']);
+                    list($filter_w, $filter_h) = getimagesize($filter_root);
 
-                    $img->setUsersId($_SESSION['id']);
-                    $this->ImageModel->save($img);
-                    $postedId = $this->ImageModel->getLastInsertId();
+                    $tmp_filter = imagecreatefrompng($filter_root);
+                    $filter = imagecreatetruecolor($width, $height);
 
-                    imagepng($tmp_img, ROOT.'web/img/uploads/'.$postedId.'.png');
-                    imagedestroy($tmp_img);
-                    header('Location: '.WEBROOT.'gallery/pic/'.$postedId);
+                    imagealphablending($filter, false);
+                    imagesavealpha($filter, true);
+                    imagecolortransparent($filter);
+
+                    $a = imagecopyresampled($filter, $tmp_filter, 0, 0, 0, 0, $width, $height, $filter_w, $filter_h);
+                    $b = imagecopyresampled($tmp_img, $filter, 0, 0, 0, 0, $width, $height, $width, $height);
+
+                    if ($a == false || $b == false)
+                        $errors['creation'] = true;
+
+                    imagedestroy($tmp_filter);
+                    imagedestroy($filter);
+
+                    if (empty($errors)) {
+                        $this->loadModel('ImageModel');
+                        $img = new Img();
+
+                        $img->setUsersId($_SESSION['id']);
+                        $this->ImageModel->save($img);
+                        $postedId = $this->ImageModel->getLastInsertId();
+
+                        imagepng($tmp_img, ROOT . 'web/img/uploads/' . $postedId . '.png');
+                        imagedestroy($tmp_img);
+                        header('Location: ' . WEBROOT . 'gallery/pic/' . $postedId);
+                    }
                 }
             }
-
             if (!empty($errors))
                 $this->index($errors);
         }

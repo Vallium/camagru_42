@@ -21,9 +21,13 @@ function __autoload($class)
         throw new Exception(sprintf('Class %s not found in %s.', $class, $path));
 }
 
+/*  Error handler for imagecreatefromstring() */
+
+set_error_handler(function ($no, $msg, $file, $line) {
+    throw new ErrorException($msg, 0, $no, $file, $line);
+});
+
 $url = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-//$url = explode('/', $_SERVER['REQUEST_URI']);
-//array_shift($url);
 
 $controller = !empty($url[0]) ? ucfirst($url[0]).'Controller' : 'HomeController';
 $method = isset($url[1]) ? $url[1] : 'index';
