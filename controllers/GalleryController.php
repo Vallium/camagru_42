@@ -152,7 +152,7 @@ class GalleryController extends Controller
                 $email->setSubject('Camagru - Somone comment one of your pics');
                 $email->setMessage(
                     '<h1>Hello, someone posted a comment on one of your pictures:</h1>'.
-                    '<p>'.$comment[0]->content.'</p>'
+                    '<p>'.htmlspecialchars($comment[0]->content).'</p>'
                 );
                 $email->send();
             }
