@@ -64,8 +64,8 @@ function ajaxSignIn(oFormElem) {
 }
 
 (function () {
-    document.getElementById('signInForm').addEventListener("submit", function () {
-        event.preventDefault();
+    document.getElementById('signInForm').addEventListener("submit", function (e) {
+        e.preventDefault();
         ajaxSignIn(this);
     });
 })();

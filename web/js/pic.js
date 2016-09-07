@@ -118,36 +118,34 @@ function ajaxDelImg(oFormElem)
     xhr.send(new FormData(oFormElem));
 }
 
-window.onload = function() {
-    document.getElementById("container").scrollIntoView();
-
+(function() {
     var comDiv = document.getElementById("comments");
     comDiv.scrollTop = comDiv.scrollHeight;
 
     if (document.getElementById("formComment"))
-        document.getElementById("formComment").addEventListener("submit", function(){
-            event.preventDefault();
+        document.getElementById("formComment").addEventListener("submit", function(e){
+            e.preventDefault();
 
             ajaxPostCom(this);
         });
 
     if (document.getElementById("formDelete"))
-        document.getElementById("formDelete").addEventListener("submit", function(){
-            event.preventDefault();
+        document.getElementById("formDelete").addEventListener("submit", function(e){
+            e.preventDefault();
 
             if (confirm('Are you sure you want to delete this image? You will not undo this action!'))
                 ajaxDelImg(this);
         });
 
-    document.getElementById("likeButton").addEventListener("click", function(){
-        event.preventDefault();
+    document.getElementById("likeButton").addEventListener("click", function(e){
+        e.preventDefault();
 
         ajaxLike();
     });
 
-    document.getElementById('dblClickOnImg').addEventListener('dblclick', function() {
-        event.preventDefault();
+    document.getElementById('dblClickOnImg').addEventListener('dblclick', function(e) {
+        e.preventDefault();
 
         ajaxLike();
     });
-};
+})();

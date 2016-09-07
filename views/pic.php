@@ -1,7 +1,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>Camagru - Picture</title>
-    <script src="/js/pic.js"></script>
     <link href="/css/pic.css" rel="stylesheet" type="text/css">
     <?php if (!empty($pic['errors'])): ?>
         <style>
@@ -75,3 +74,5 @@
     </div>
     <div class="empty"></div>
 </body>
+
+<script src="/js/pic.js"></script>

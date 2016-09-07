@@ -121,12 +121,6 @@ function ajaxPostImgFromWebcam(oFormElem)
         snapbutton.style.display = 'block';
     });
 
-    // document.getElementById('uploadFromWebcamForm').addEventListener('submit', function() {
-    //     event.preventDefault();
-    //
-    //     ajaxPostImgFromWebcam(this);
-    // });
-
     for (var i = 0; i <= document.getElementById('nbrFilters').value; i++) {
         if (i == 0)
             document.getElementById('filter-' + i).style.borderColor = '#ff6800';

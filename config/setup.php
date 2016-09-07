@@ -1,6 +1,4 @@
 <?php
-    error_reporting(E_ALL);
-//    ini_set('display_errors', 'on');
     include(__DIR__.'/database.php');
 
     echo 'You will reset all database and delete all pictures uploaded,'.PHP_EOL;

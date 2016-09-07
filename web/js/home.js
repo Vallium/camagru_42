@@ -77,8 +77,8 @@ function yHandler()
 
     window.onscroll = yHandler;
 
-    document.getElementById("formLoadMore").addEventListener("submit", function(){
-        event.preventDefault();
+    document.getElementById("formLoadMore").addEventListener("submit", function(e){
+        e.preventDefault();
         ajaxLoadMore();
     });
 })();
